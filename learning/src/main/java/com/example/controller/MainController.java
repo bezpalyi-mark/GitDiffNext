@@ -21,9 +21,7 @@ import java.util.Map;
 
 @Controller
 public class MainController {
-
-    private User currentUser;
-
+    
     @Autowired
     private MessageRepo messageRepo;
 
@@ -39,22 +37,8 @@ public class MainController {
         return "greeting";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public void loginUser(User user, Map<String, Object> model) {
-//        currentUser = user;
-        System.out.println();
-        System.out.println(user.getUsername());
-    }
-
     @GetMapping("/review")
-    public String review( @RequestParam String url,
-                          Map<String, Object> model) {
-        GitApi gitApi = new GitApi(url);
+    public String review(Map<String, Object> model) {
         Iterable<MergeRequest> requestList = mergeRequestRepo.findAll();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
@@ -63,12 +47,25 @@ public class MainController {
         } else {
             username = principal.toString();
         }
-        currentUser = userRepo.findByUsername(username);
+        User currentUser = userRepo.findByUsername(username);
         for(MergeRequest request : requestList) {
             if(request.isReviewer(currentUser)) {
                 model.put("request", request);
             }
         }
+        return "review";
+    }
+
+    @PostMapping("/review")
+    public String addRequest(@RequestParam String url) {
+        if(!url.matches("https?:\\/\\/(www\\.)?" +
+                "[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")) {
+            System.out.println("Bad url!");
+            return "/review";
+        }
+        GitApi gitApi = new GitApi(url);
+        MergeRequest mergeRequest = gitApi.GetPR();
+        mergeRequestRepo.save(mergeRequest);
         return "review";
     }
 
