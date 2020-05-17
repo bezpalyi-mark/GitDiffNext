@@ -24,6 +24,12 @@ public class MainController {
         return "greeting";
     }
 
+    @GetMapping("/review")
+    public String review() {
+
+        return "review";
+    }
+
     @GetMapping("/main")
     public String main(Map<String, Object> model) {
         Iterable<Message> messages = messageRepo.findAll();

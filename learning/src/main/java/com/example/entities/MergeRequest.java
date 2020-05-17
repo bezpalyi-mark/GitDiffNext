@@ -3,6 +3,7 @@ package com.example.entities;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 @Table(name = "request")
 public class MergeRequest {
@@ -13,9 +14,14 @@ public class MergeRequest {
     private String titlePR;
     /// Pull request description.
     private String descriptionPR;
+
     @OneToOne
     /// Pull request creator.
     private User creatorPR;
+
+    @OneToMany
+    private final List<User> reviewers = new ArrayList<>();
+
     /// Pull request status.
     private Status statusPR;
     /// URL to diff file.
@@ -93,5 +99,17 @@ public class MergeRequest {
 
     public void addRequestComment(RequestComment requestComment){
         discussions.add(requestComment);
+    }
+
+    public boolean isReviewer(User user) {
+        return reviewers.contains(user);
+    }
+
+    public List<User> getReviewers() {
+        return reviewers;
+    }
+
+    public void addReviewer(User user) {
+        reviewers.add(user);
     }
 }

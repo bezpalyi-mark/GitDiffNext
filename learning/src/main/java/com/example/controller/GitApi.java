@@ -4,6 +4,7 @@ import com.example.entities.MergeRequest;
 import com.example.entities.RequestComment;
 import com.example.entities.Status;
 import com.example.entities.User;
+import com.example.repos.MergeRequestRepo;
 import com.example.repos.UserRepo;
 import io.gitea.ApiClient;
 import io.gitea.ApiException;
@@ -23,6 +24,9 @@ import java.util.List;
 public class GitApi {
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private MergeRequestRepo mergeRequestRepo;
     /// Input url which enter user.
     private String url;  //https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3 "https://try.gitea.io/AlexKushch/test/pulls/2"
     private final MergeRequest mergeRequest = new MergeRequest();
