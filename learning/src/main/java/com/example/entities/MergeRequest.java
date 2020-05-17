@@ -1,4 +1,4 @@
-package com.example.domain;
+package com.example.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,8 +20,8 @@ public class MergeRequest {
     private Status statusPR;
     /// URL to diff file.
     private String diffURL;
+
     @OneToMany
-    /// List of comments in pull request discussions.
     private List<RequestComment> discussions = new ArrayList<>();
 
     public MergeRequest() {

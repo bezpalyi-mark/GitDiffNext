@@ -1,4 +1,4 @@
-package com.example.domain;
+package com.example.entities;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,8 +15,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String login;
-
+    @Column(name = "login")
     private String username;
 
     private String password;
@@ -39,10 +38,6 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getUsername() {
-        return login;
-    }
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -63,8 +58,8 @@ public class User implements UserDetails {
         return isActive();
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String login) {
+        this.username = login;
     }
 
     @Override
@@ -74,6 +69,11 @@ public class User implements UserDetails {
 
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
     }
 
     public void setPassword(String password) {

@@ -1,4 +1,4 @@
-package com.example.domain;
+package com.example.entities;
 
 import javax.persistence.*;
 
@@ -8,22 +8,25 @@ public class RequestComment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String author;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User author;
     private String text;
 
     public RequestComment() {
     }
 
-    public RequestComment(String author, String text) {
+    public RequestComment(User author, String text) {
         this.author = author;
         this.text = text;
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 

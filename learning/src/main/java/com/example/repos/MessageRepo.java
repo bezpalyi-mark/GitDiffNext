@@ -1,6 +1,6 @@
 package com.example.repos;
 
-import com.example.domain.Message;
+import com.example.entities.Message;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

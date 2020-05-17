@@ -13,10 +13,6 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepo userRepo;
 
-    public UserDetails loadUserByLogin(String login) throws UsernameNotFoundException {
-        return userRepo.findByLogin(login);
-    }
-
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return userRepo.findByUsername(s);

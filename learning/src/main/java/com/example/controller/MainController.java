@@ -1,7 +1,7 @@
 package com.example.controller;
 
-import com.example.domain.Message;
-import com.example.domain.User;
+import com.example.entities.Message;
+import com.example.entities.User;
 import com.example.repos.MessageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

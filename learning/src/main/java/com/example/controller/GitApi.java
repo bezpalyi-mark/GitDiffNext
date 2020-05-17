@@ -1,11 +1,10 @@
 package com.example.controller;
 
-import com.example.domain.MergeRequest;
-import com.example.domain.RequestComment;
-import com.example.domain.Status;
-import com.example.domain.User;
+import com.example.entities.MergeRequest;
+import com.example.entities.RequestComment;
+import com.example.entities.Status;
+import com.example.entities.User;
 import com.example.repos.UserRepo;
-import com.example.service.UserService;
 import io.gitea.ApiClient;
 import io.gitea.ApiException;
 import io.gitea.Configuration;
@@ -15,17 +14,21 @@ import io.gitea.auth.ApiKeyAuth;
 import io.gitea.model.Comment;
 import io.gitea.model.PullRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Controller
 public class GitApi {
-    /// Input url which enter user.
     @Autowired
     private UserRepo userRepo;
-    private String url = "https://try.gitea.io/AlexKushch/test/pulls/2";  //https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3
-    private MergeRequest mergeRequest = new MergeRequest();
+    /// Input url which enter user.
+    private String url;  //https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3 "https://try.gitea.io/AlexKushch/test/pulls/2"
+    private final MergeRequest mergeRequest = new MergeRequest();
+
+    public GitApi() {
+    }
 
     public GitApi(String url) {
         this.url = url;
@@ -57,7 +60,7 @@ public class GitApi {
 
         mergeRequest.setTitlePR(result.getTitle());  // Get title.
         mergeRequest.setDescriptionPR(result.getBody()); // Get description.
-        mergeRequest.setCreatorPR(userRepo.findByLogin(result.getUser().getLogin()));  // Get creator.
+        mergeRequest.setCreatorPR(userRepo.findByUsername(result.getUser().getLogin()));  // Get creator.
 
         /// Class 'PullRequest' has two field. State(open, close), Merged(merged, not merged).
         String state = result.getState();
@@ -79,7 +82,8 @@ public class GitApi {
             comments = issueApi.issueGetRepoComments(owner, repo, "");
             for (Comment comment : comments) {
                 if (comment.getPullRequestUrl().equals(url)) {
-                    mergeRequest.addRequestComment(new RequestComment(comment.getUser().getLogin(), comment.getBody()));
+                    User user = userRepo.findByUsername(comment.getUser().getLogin());
+                    mergeRequest.addRequestComment(new RequestComment(user, comment.getBody()));
                 }
             }
         } catch (ApiException e) {
