@@ -25,8 +25,6 @@ public class GitApi {
     @Autowired
     private UserRepo userRepo;
 
-    @Autowired
-    private MergeRequestRepo mergeRequestRepo;
     /// Input url which enter user.
     private String url;  //https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3 "https://try.gitea.io/AlexKushch/test/pulls/2"
     private final MergeRequest mergeRequest = new MergeRequest();
