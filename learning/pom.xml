@@ -68,6 +68,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.github.zeripath</groupId>
+            <artifactId>java-gitea-api</artifactId>
+            <version>1.7.4</version>
+        </dependency>
     </dependencies>
 
     <build>
