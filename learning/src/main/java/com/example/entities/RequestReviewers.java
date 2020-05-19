@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class RequestReviewers {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
@@ -38,5 +38,13 @@ public class RequestReviewers {
 
     public void setRequest(MergeRequest request) {
         this.request = request;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

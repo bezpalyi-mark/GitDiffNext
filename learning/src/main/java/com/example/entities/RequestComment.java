@@ -6,13 +6,18 @@ import javax.persistence.*;
 @Table(name = "comment")
 public class RequestComment {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
+
     private String text;
+
+    @OneToOne
+    @JoinColumn(name = "request_id")
+    private MergeRequest request;
 
     public RequestComment() {
     }
@@ -44,5 +49,13 @@ public class RequestComment {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public MergeRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(MergeRequest request) {
+        this.request = request;
     }
 }

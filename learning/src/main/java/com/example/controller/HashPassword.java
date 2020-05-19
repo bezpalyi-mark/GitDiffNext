@@ -1,8 +1,5 @@
 package com.example.controller;
 
-import com.example.entities.User;
-import com.example.repos.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.MessageDigest;
