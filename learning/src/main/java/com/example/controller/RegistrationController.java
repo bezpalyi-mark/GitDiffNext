@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -26,12 +27,18 @@ public class RegistrationController {
     public String addUSer(User user, Map<String, Object> model) {
         System.out.println(user.getUsername());
         User userFromDB = userRepo.findByUsername(user.getUsername());
-        if(userFromDB != null) {
+        if (userFromDB != null) {
             model.put("message", "User exists!");
         }
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
-        userRepo.save(user);
+
+        HashPassword hashPassword = new HashPassword();
+        String hash = hashPassword.encode(user.getPassword());
+        user.setPassword(hash);
+        if(!hash.isEmpty()){
+            userRepo.save(user);
+        }
         return "redirect:/login";
     }
 }
