@@ -38,7 +38,12 @@ public class MainController {
     public String greeting(Map<String, Object> model) {
         if(!adminExists) {
             HashPassword hashPassword = new HashPassword();
-            User user = new User();
+            User user = userRepo.findByUsername("admin");
+            if(user == null) {
+                user = new User();
+            } else {
+                return "greeting";
+            }
             user.setActive(true);
             user.setUsername("admin");
             user.setPassword(hashPassword.encode("admin"));
@@ -81,26 +86,21 @@ public class MainController {
         return "review";
     }
 
-    @GetMapping("/main")
+    @GetMapping("/main-tree")
     public String main(Map<String, Object> model) {
-        Iterable<Message> messages = messageRepo.findAll();
-        model.put("messages", messages);
-        return "main";
+
+        return "main-tree";
     }
 
-    @PostMapping("/main")
-    public String add(
-            @AuthenticationPrincipal User user,
-            @RequestParam String text,
-            @RequestParam String tag,
-            Map<String, Object> model) {
-        Message message = new Message(text, tag, user);
-        messageRepo.save(message);
-
-        Iterable<Message> messages = messageRepo.findAll();
-        model.put("messages", messages);
-        return "main";
-    }
+//    @PostMapping("/main-tree")
+//    public String add(
+//            @AuthenticationPrincipal User user,
+//            @RequestParam String text,
+//            @RequestParam String tag,
+//            Map<String, Object> model) {
+//
+//        return "main-tree";
+//    }
 
     @PostMapping("filter")
     public String filter(@RequestParam String filter,
