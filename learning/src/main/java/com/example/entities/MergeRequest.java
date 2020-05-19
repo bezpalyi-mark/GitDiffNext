@@ -11,24 +11,33 @@ public class MergeRequest {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     /// Pull request title.
+    @Column(name = "title_pr")
     private String titlePR;
     /// Pull request description.
+    @Column(name = "description_pr")
     private String descriptionPR;
 
     @OneToOne
     /// Pull request creator.
+    @JoinColumn(name = "creator_pr_id")
     private User creatorPR;
 
-    @OneToMany
-    private final List<User> reviewers = new ArrayList<>();
+//    @OneToMany
+//    @JoinColumn(name = "reviewer_id", referencedColumnName = "id")
+//    private final List<User> reviewers = new ArrayList<>();
 
     /// Pull request status.
+    @CollectionTable(name = "pr_status", joinColumns = @JoinColumn(name = "request_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private Status statusPR;
     /// URL to diff file.
+    @Column(name = "diff_url")
     private String diffURL;
 
-    @OneToMany
-    private List<RequestComment> discussions = new ArrayList<>();
+//    @OneToMany
+//    @JoinColumn(name = "comment_id", referencedColumnName = "id")
+//    private List<RequestComment> discussions = new ArrayList<>();
 
     public MergeRequest() {
     }
@@ -81,13 +90,13 @@ public class MergeRequest {
         this.diffURL = diffURL;
     }
 
-    public List<RequestComment> getDiscussions() {
-        return discussions;
-    }
-
-    public void setDiscussions(List<RequestComment> discussions) {
-        this.discussions = discussions;
-    }
+//    public List<RequestComment> getDiscussions() {
+//        return discussions;
+//    }
+//
+//    public void setDiscussions(List<RequestComment> discussions) {
+//        this.discussions = discussions;
+//    }
 
     public Long getId() {
         return id;
@@ -97,19 +106,19 @@ public class MergeRequest {
         this.id = id;
     }
 
-    public void addRequestComment(RequestComment requestComment){
-        discussions.add(requestComment);
-    }
-
-    public boolean isReviewer(User user) {
-        return reviewers.contains(user);
-    }
-
-    public List<User> getReviewers() {
-        return reviewers;
-    }
-
-    public void addReviewer(User user) {
-        reviewers.add(user);
-    }
+//    public void addRequestComment(RequestComment requestComment){
+//        discussions.add(requestComment);
+//    }
+//
+//    public boolean isReviewer(User user) {
+//        return reviewers.contains(user);
+//    }
+//
+//    public List<User> getReviewers() {
+//        return reviewers;
+//    }
+//
+//    public void addReviewer(User user) {
+//        reviewers.add(user);
+//    }
 }

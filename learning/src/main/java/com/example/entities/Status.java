@@ -1,7 +1,14 @@
 package com.example.entities;
 
-public enum Status {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Status implements GrantedAuthority {
     MERGED,
     NOT_MERGED,
-    CLOSED
+    CLOSED;
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }

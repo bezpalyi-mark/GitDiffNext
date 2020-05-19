@@ -85,7 +85,7 @@ public class GitApi {
             for (Comment comment : comments) {
                 if (comment.getPullRequestUrl().equals(url)) {
                     User user = userRepo.findByUsername(comment.getUser().getLogin());
-                    mergeRequest.addRequestComment(new RequestComment(user, comment.getBody()));
+//                    mergeRequest.addRequestComment(new RequestComment(user, comment.getBody()));
                 }
             }
         } catch (ApiException e) {

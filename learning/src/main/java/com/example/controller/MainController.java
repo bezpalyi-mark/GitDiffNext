@@ -49,9 +49,9 @@ public class MainController {
         }
         User currentUser = userRepo.findByUsername(username);
         for(MergeRequest request : requestList) {
-            if(request.isReviewer(currentUser)) {
-                model.put("request", request);
-            }
+//            if(request.isReviewer(currentUser)) {
+//                model.put("request", request);
+//            }
         }
         return "review";
     }
