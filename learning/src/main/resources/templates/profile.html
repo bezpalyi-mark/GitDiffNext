@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title th:text="(title)"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        .block{
+            padding: 0;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="main">
+    <div class="container mt-5">
+        <h1>Добро пожаловать в Profile</h1> </br>
+        <div class="row mb-5">
+            <div class="col-6 block" >
+                <img th:src="@{/img/myFace.png}" class="img-fluid center-block rounded-circle" alt="MyFace" style="max-height: 350px;">
+            </div>
+            <div class="col-6 block">
+                <p style="width: 100%;" class="mt-2 mb-2" th:text="'Ваш Логин: ' + ${login}"></p>
+                <p style="width: 100%;" class="mt-2 mb-2" th:text="'Ваш Курс: ' + ${curse}"></p>
+                <p style="width: 100%;" class="mt-2 mb-2" th:text="'Ваша Роль: ' + ${role}"></p>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-12 mb-2">
+                <h2>Доступные вам для проверки MR</h2>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>№ п/п</th>
+                        <th>Задание</th>
+                        <th>Студент</th>
+                        <th>MR</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Задание 1</td>
+                        <td>dagas_sa</td>
+                        <td>https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12 ">
+                <form action="/profile" class="form-signing">
+                    <input type="button" class="form-button btn btn-outline-secondary" value="Обновить">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
