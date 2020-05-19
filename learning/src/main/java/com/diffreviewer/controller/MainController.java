@@ -1,11 +1,12 @@
-package com.example.controller;
+package com.diffreviewer.controller;
 
-import com.example.entities.MergeRequest;
-import com.example.entities.Message;
-import com.example.entities.User;
-import com.example.repos.MergeRequestRepo;
-import com.example.repos.MessageRepo;
-import com.example.repos.UserRepo;
+import com.diffreviewer.entities.MergeRequest;
+import com.diffreviewer.entities.Message;
+import com.diffreviewer.entities.Role;
+import com.diffreviewer.entities.User;
+import com.diffreviewer.repos.MergeRequestRepo;
+import com.diffreviewer.repos.MessageRepo;
+import com.diffreviewer.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,13 +16,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 
 
 @Controller
 public class MainController {
-    
+
+    private boolean adminExists = false;
+
     @Autowired
     private MessageRepo messageRepo;
 
@@ -33,7 +36,16 @@ public class MainController {
 
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
-
+        if(!adminExists) {
+            HashPassword hashPassword = new HashPassword();
+            User user = new User();
+            user.setActive(true);
+            user.setUsername("admin");
+            user.setPassword(hashPassword.encode("admin"));
+            user.setRoles(Collections.singleton(Role.ADMIN));
+            userRepo.save(user);
+            adminExists = true;
+        }
         return "greeting";
     }
 

@@ -1,11 +1,9 @@
-package com.example.entities;
+package com.diffreviewer.entities;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public enum Status implements GrantedAuthority {
-    MERGED,
-    NOT_MERGED,
-    CLOSED;
+public enum Role implements GrantedAuthority {
+    USER, ADMIN;
 
     @Override
     public String getAuthority() {

@@ -1,6 +1,6 @@
-package com.example.repos;
+package com.diffreviewer.repos;
 
-import com.example.entities.Message;
+import com.diffreviewer.entities.Message;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

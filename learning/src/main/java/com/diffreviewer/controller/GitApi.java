@@ -1,11 +1,9 @@
-package com.example.controller;
+package com.diffreviewer.controller;
 
-import com.example.entities.MergeRequest;
-import com.example.entities.RequestComment;
-import com.example.entities.Status;
-import com.example.entities.User;
-import com.example.repos.MergeRequestRepo;
-import com.example.repos.UserRepo;
+import com.diffreviewer.entities.MergeRequest;
+import com.diffreviewer.entities.Status;
+import com.diffreviewer.entities.User;
+import com.diffreviewer.repos.UserRepo;
 import io.gitea.ApiClient;
 import io.gitea.ApiException;
 import io.gitea.Configuration;

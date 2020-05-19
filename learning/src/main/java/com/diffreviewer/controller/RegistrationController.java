@@ -1,14 +1,13 @@
-package com.example.controller;
+package com.diffreviewer.controller;
 
-import com.example.entities.Role;
-import com.example.entities.User;
-import com.example.repos.UserRepo;
+import com.diffreviewer.entities.Role;
+import com.diffreviewer.entities.User;
+import com.diffreviewer.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Map;
 

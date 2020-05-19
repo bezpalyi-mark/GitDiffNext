@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.diffreviewer.controller;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 

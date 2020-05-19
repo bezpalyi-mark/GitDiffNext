@@ -1,4 +1,4 @@
-package com.example.entities;
+package com.diffreviewer.entities;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

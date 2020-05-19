@@ -1,10 +1,7 @@
-package com.example.repos;
+package com.diffreviewer.repos;
 
-import com.example.entities.MergeRequest;
-import com.example.entities.User;
+import com.diffreviewer.entities.MergeRequest;
 import org.springframework.data.repository.CrudRepository;
-
-import java.util.List;
 
 public interface MergeRequestRepo extends CrudRepository<MergeRequest, Long> {
 }

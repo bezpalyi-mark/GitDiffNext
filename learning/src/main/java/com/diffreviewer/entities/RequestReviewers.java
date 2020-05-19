@@ -1,4 +1,4 @@
-package com.example.entities;
+package com.diffreviewer.entities;
 
 import javax.persistence.*;
 
