@@ -42,13 +42,13 @@
             <img th:src="@{/img/mailstone.jpg}" alt="MailStone" class="center-block img-fluid">
         </div>
     </div>
+    <form method="post" action="main-tree" class="form-signing" style="margin-top: 32px;">
     <div class="row mb-5">
         <div class="col-12 h3">Добавить MR на проверку</div>
         <div class="col-4">
-            <form>
                 <div class="form-group">
                     <label for="taskChoise">Задание:</label>
-                    <select class="form-control" name="selectTask" id="taskChoise">
+                    <select class="form-control" name="taskChoise" id="taskChoise">
                         <option>DB_Config</option>
                         <option>File_Downloader</option>
                         <option>Ui_Intro</option>
@@ -62,24 +62,20 @@
                         <option>Tasklist</option>
                     </select>
                 </div>
-            </form>
         </div>
         <div class="col-6">
-            <form>
                 <div class="form-group">
                     <label for="MR">Ваш MR</label>
-                    <input type="text" name="mrInput" class="form-control" id="MR" placeholder="https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3">
+                    <input type="text" name="MR" class="form-control" id="MR" placeholder="https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3"
+                           th:value="*{MR}">
                 </div>
-            </form>
         </div>
         <div class="col-2">
-            <form class="form-signing" style="margin-top: 32px;">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <input type="submit" class="form-button btn btn-outline-secondary" value="Отправить">
-            </form>
         </div>
     </div>
-
+    </form>
 
 </div>
 </body>

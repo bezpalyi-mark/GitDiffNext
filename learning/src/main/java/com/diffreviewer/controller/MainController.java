@@ -66,6 +66,9 @@ public class MainController {
             username = principal.toString();
         }
         User currentUser = userRepo.findByUsername(username);
+        if(currentUser == null) {
+            return "redirect:/login";
+        }
         model.addAttribute("login", currentUser.getUsername());
         model.addAttribute("curse", "novalab");
         model.addAttribute("role", currentUser.getRoles());
@@ -82,31 +85,37 @@ public class MainController {
         return "profile";
     }
 
+
+    @GetMapping("/main-tree")
+    public String main(@AuthenticationPrincipal User user, Map<String, Object> model) {
+        if(user == null) {
+            return "redirect:/login";
+        }
+        return "main-tree";
+    }
+
     @PostMapping("/main-tree")
     public String addRequest(@AuthenticationPrincipal User user,
-                             @RequestParam String mrInput,
-                             @RequestParam String selectTask) {
-        if (!mrInput.matches("https?:\\/\\/(www\\.)?" +
-                "[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")) {
-            System.out.println("Bad url!");
-            return "/main-tree";
-        }
-        Task task = taskRepo.findByNameAndUser(selectTask, user);
+                             @RequestParam String MR,
+                             @RequestParam String taskChoise,
+                             Model model) {
+//        if (!MR.matches("https?:\\/\\/(www\\.)?" +
+//                "[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")) {
+//            System.out.println("Bad url!");
+//            return "/main-tree";
+//        }
+        Task task = taskRepo.findByNameAndUser(taskChoise, user);
         if (task == null) {
             System.out.println("No task for this user given!");
             return "/main-tree";
         }
-        GitApi gitApi = new GitApi(mrInput);
-        MergeRequest mergeRequest = gitApi.GetPR();
-        mergeRequest.setTask(task);
-        mergeRequestRepo.save(mergeRequest);
+        GitApi gitApi = new GitApi(MR);
+        MergeRequest mergeRequest = gitApi.GetPR(user);
+        if(mergeRequest != null) {
+            mergeRequest.setTask(task);
+            mergeRequestRepo.save(mergeRequest);
+        }
         return "/main-tree";
-    }
-
-    @GetMapping("/main-tree")
-    public String main(Map<String, Object> model) {
-
-        return "main-tree";
     }
 
     @GetMapping("/tree")
@@ -115,10 +124,5 @@ public class MainController {
         return "redirect:/main-tree";
     }
 
-    @PostMapping("/profile")
-    public String logoutPage(Model model) {
-
-        return "redirect:/login?logout";
-    }
 }
 

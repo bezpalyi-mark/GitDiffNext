@@ -20,8 +20,6 @@ import java.util.List;
 
 @Controller
 public class GitApi {
-    @Autowired
-    private UserRepo userRepo;
 
     /// Input url which enter user.
     private String url;  //https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3 "https://try.gitea.io/AlexKushch/test/pulls/2"
@@ -34,7 +32,7 @@ public class GitApi {
         this.url = url;
     }
 
-    public MergeRequest GetPR() {
+    public MergeRequest GetPR(User user) {
         /// Set configuration and access token.
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath("https://try.gitea.io/api/v1");
@@ -60,7 +58,11 @@ public class GitApi {
 
         mergeRequest.setTitlePR(result.getTitle());  // Get title.
         mergeRequest.setDescriptionPR(result.getBody()); // Get description.
-        mergeRequest.setCreatorPR(userRepo.findByUsername(result.getUser().getLogin()));  // Get creator.
+        if(!user.getUsername().equals(result.getUser().getLogin())) {
+            System.out.println("Wrong user of MR");
+            return null;
+        }
+        mergeRequest.setCreatorPR(user);  // Get creator.
 
         /// Class 'PullRequest' has two field. State(open, close), Merged(merged, not merged).
         String state = result.getState();
@@ -82,7 +84,6 @@ public class GitApi {
             comments = issueApi.issueGetRepoComments(owner, repo, "");
             for (Comment comment : comments) {
                 if (comment.getPullRequestUrl().equals(url)) {
-                    User user = userRepo.findByUsername(comment.getUser().getLogin());
 //                    mergeRequest.addRequestComment(new RequestComment(user, comment.getBody()));
                 }
             }
