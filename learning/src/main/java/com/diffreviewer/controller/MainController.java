@@ -6,6 +6,7 @@ import com.diffreviewer.repos.TaskRepo;
 import com.diffreviewer.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -37,10 +38,10 @@ public class MainController {
 
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
-        if(!adminExists) {
+        if (!adminExists) {
             HashPassword hashPassword = new HashPassword();
             User user = userRepo.findByUsername("admin");
-            if(user == null) {
+            if (user == null) {
                 user = new User();
             } else {
                 return "redirect:/main-tree";
@@ -68,30 +69,38 @@ public class MainController {
         model.addAttribute("login", currentUser.getUsername());
         model.addAttribute("curse", "novalab");
         model.addAttribute("role", currentUser.getRoles());
-        if(currentUser.getRoles().contains(Role.ADMIN)) {
+        if (currentUser.getRoles().contains(Role.ADMIN)) {
             model.addAttribute("requests", mergeRequestRepo.findAll());
             return "profile";
         }
         List<Task> doneTasks = taskRepo.findByUserAndIsDone(currentUser, true);
         List<MergeRequest> mergeRequestList = new ArrayList<>();
-        for(Task task : doneTasks) {
+        for (Task task : doneTasks) {
             mergeRequestList.add(mergeRequestRepo.findByTaskAndStatusPR(task, Status.NOT_MERGED));
         }
         model.addAttribute("requests", mergeRequestList);
         return "profile";
     }
 
-    @PostMapping("/review")
-    public String addRequest(@RequestParam String url) {
-        if(!url.matches("https?:\\/\\/(www\\.)?" +
+    @PostMapping("/main-tree")
+    public String addRequest(@AuthenticationPrincipal User user,
+                             @RequestParam String mrInput,
+                             @RequestParam String selectTask) {
+        if (!mrInput.matches("https?:\\/\\/(www\\.)?" +
                 "[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")) {
             System.out.println("Bad url!");
-            return "/review";
+            return "/main-tree";
         }
-        GitApi gitApi = new GitApi(url);
+        Task task = taskRepo.findByNameAndUser(selectTask, user);
+        if (task == null) {
+            System.out.println("No task for this user given!");
+            return "/main-tree";
+        }
+        GitApi gitApi = new GitApi(mrInput);
         MergeRequest mergeRequest = gitApi.GetPR();
+        mergeRequest.setTask(task);
         mergeRequestRepo.save(mergeRequest);
-        return "review";
+        return "/main-tree";
     }
 
     @GetMapping("/main-tree")
@@ -100,8 +109,14 @@ public class MainController {
         return "main-tree";
     }
 
+    @GetMapping("/tree")
+    public String tree(Map<String, Object> model) {
+
+        return "redirect:/main-tree";
+    }
+
     @PostMapping("/profile")
-    public String logoutPage (Model model) {
+    public String logoutPage(Model model) {
 
         return "redirect:/login?logout";
     }

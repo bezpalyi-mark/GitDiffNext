@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface TaskRepo extends CrudRepository<Task, Integer> {
     List<Task> findByUserAndIsDone(User user, Boolean isDone);
+    Task findByNameAndUser(String name, User user);
 }
