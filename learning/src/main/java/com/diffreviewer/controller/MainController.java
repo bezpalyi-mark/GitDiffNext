@@ -5,14 +5,16 @@ import com.diffreviewer.repos.MergeRequestRepo;
 import com.diffreviewer.repos.TaskRepo;
 import com.diffreviewer.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,15 +65,19 @@ public class MainController {
             username = principal.toString();
         }
         User currentUser = userRepo.findByUsername(username);
+        model.addAttribute("login", currentUser.getUsername());
+        model.addAttribute("curse", "novalab");
+        model.addAttribute("role", currentUser.getRoles());
+        if(currentUser.getRoles().contains(Role.ADMIN)) {
+            model.addAttribute("requests", mergeRequestRepo.findAll());
+            return "profile";
+        }
         List<Task> doneTasks = taskRepo.findByUserAndIsDone(currentUser, true);
         List<MergeRequest> mergeRequestList = new ArrayList<>();
         for(Task task : doneTasks) {
             mergeRequestList.add(mergeRequestRepo.findByTaskAndStatusPR(task, Status.NOT_MERGED));
         }
         model.addAttribute("requests", mergeRequestList);
-        model.addAttribute("login", currentUser.getUsername());
-        model.addAttribute("curse", "novalab");
-        model.addAttribute("role", currentUser.getRoles());
         return "profile";
     }
 
@@ -92,6 +98,12 @@ public class MainController {
     public String main(Map<String, Object> model) {
 
         return "main-tree";
+    }
+
+    @PostMapping("/profile")
+    public String logoutPage (Model model) {
+
+        return "redirect:/login?logout";
     }
 }
 
