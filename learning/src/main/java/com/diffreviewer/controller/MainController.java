@@ -1,6 +1,7 @@
 package com.diffreviewer.controller;
 
 import com.diffreviewer.entities.*;
+import com.diffreviewer.repos.ListTaskRepo;
 import com.diffreviewer.repos.MergeRequestRepo;
 import com.diffreviewer.repos.TaskRepo;
 import com.diffreviewer.repos.UserRepo;
@@ -34,6 +35,9 @@ public class MainController {
 
     @Autowired
     private TaskRepo taskRepo;
+
+    @Autowired
+    private ListTaskRepo listTaskRepo;
 
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
@@ -95,8 +99,13 @@ public class MainController {
     }
 
     @GetMapping("/main-tree")
-    public String main(Map<String, Object> model) {
-
+    public String main(Model model) {
+        List<ListTask> tasks = (List<ListTask>)listTaskRepo.findAll();
+        if(tasks.size() == 0)
+        {
+            tasks.add(new ListTask(1, "No tasks", 0));
+        }
+        model.addAttribute("existTasks", tasks);
         return "main-tree";
     }
 
