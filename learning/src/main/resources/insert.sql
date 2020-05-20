@@ -1,4 +1,4 @@
-USE diff-reviewer;
+USE diff_reviewer;
 
 INSERT INTO usr (password, login, active)
 VALUES ('password', 'krhv', 0), ('root', 'rooted', 0), ('admin', 'admin', 0);

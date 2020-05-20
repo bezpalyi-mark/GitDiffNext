@@ -26,9 +26,9 @@
                 <p style="width: 100%;" class="mt-2 mb-2" th:text="'Ваша Роль: ' + ${role}"></p>
             </div>
             <div class="col-2 block">
-                <form class="form-signing" action="/logout" method="post">
+                <form class="form-signing" th:action="@{/logout}" method="post" >
                     <input type="button" class="form-button btn btn-outline-secondary" value="Выйти из аккаунта">
-                    <input type="hidden" name="_csrf" value="_csrf.token">
+<!--                    <input type="hidden" name="_csrf" value="_csrf.token">-->
                 </form>
             </div>
         </div>
@@ -46,10 +46,10 @@
                     </thead>
                     <tbody>
                     <tr th:each="request : ${requests}">
-                        <td>request.id</td>
-                        <td>request.description</td>
-                        <td>request.creatorPR</td>
-                        <td>request.diffURL</td>
+                        <td th:text="${request.id}">Text ...</td>
+                        <td th:text="${request.descriptionPR}">Text...</td>
+                        <td th:text="${request.creatorPR.username}">Text...</td>
+                        <td th:text="${request.diffURL}">Text...</td>
                     </tr>
                     </tbody>
                 </table>
