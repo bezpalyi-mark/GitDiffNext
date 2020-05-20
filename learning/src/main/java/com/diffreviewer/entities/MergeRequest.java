@@ -32,6 +32,10 @@ public class MergeRequest {
     @Column(name = "diff_url")
     private String diffURL;
 
+    @OneToOne
+    @JoinColumn(name = "task_id")
+    private Task task;
+
     public MergeRequest() {
     }
 
@@ -91,4 +95,11 @@ public class MergeRequest {
         this.id = id;
     }
 
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
 }

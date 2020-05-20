@@ -1,22 +1,21 @@
 package com.diffreviewer.controller;
 
-import com.diffreviewer.entities.MergeRequest;
-import com.diffreviewer.entities.Message;
-import com.diffreviewer.entities.Role;
-import com.diffreviewer.entities.User;
+import com.diffreviewer.entities.*;
 import com.diffreviewer.repos.MergeRequestRepo;
-import com.diffreviewer.repos.MessageRepo;
+import com.diffreviewer.repos.TaskRepo;
 import com.diffreviewer.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 
@@ -26,13 +25,13 @@ public class MainController {
     private boolean adminExists = false;
 
     @Autowired
-    private MessageRepo messageRepo;
-
-    @Autowired
     private MergeRequestRepo mergeRequestRepo;
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private TaskRepo taskRepo;
 
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
@@ -42,7 +41,7 @@ public class MainController {
             if(user == null) {
                 user = new User();
             } else {
-                return "greeting";
+                return "redirect:/main-tree";
             }
             user.setActive(true);
             user.setUsername("admin");
@@ -51,12 +50,11 @@ public class MainController {
             userRepo.save(user);
             adminExists = true;
         }
-        return "greeting";
+        return "redirect:/main-tree";
     }
 
-    @GetMapping("/review")
-    public String review(Map<String, Object> model) {
-        Iterable<MergeRequest> requestList = mergeRequestRepo.findAll();
+    @GetMapping("/profile")
+    public String profile(Model model) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
         if (principal instanceof UserDetails) {
@@ -65,12 +63,16 @@ public class MainController {
             username = principal.toString();
         }
         User currentUser = userRepo.findByUsername(username);
-        for(MergeRequest request : requestList) {
-//            if(request.isReviewer(currentUser)) {
-//                model.put("request", request);
-//            }
+        List<Task> doneTasks = taskRepo.findByUserAndIsDone(currentUser, true);
+        List<MergeRequest> mergeRequestList = new ArrayList<>();
+        for(Task task : doneTasks) {
+            mergeRequestList.add(mergeRequestRepo.findByTaskAndStatusPR(task, Status.NOT_MERGED));
         }
-        return "review";
+        model.addAttribute("requests", mergeRequestList);
+        model.addAttribute("login", currentUser.getUsername());
+        model.addAttribute("curse", "novalab");
+        model.addAttribute("role", currentUser.getRoles());
+        return "profile";
     }
 
     @PostMapping("/review")
@@ -90,29 +92,6 @@ public class MainController {
     public String main(Map<String, Object> model) {
 
         return "main-tree";
-    }
-
-//    @PostMapping("/main-tree")
-//    public String add(
-//            @AuthenticationPrincipal User user,
-//            @RequestParam String text,
-//            @RequestParam String tag,
-//            Map<String, Object> model) {
-//
-//        return "main-tree";
-//    }
-
-    @PostMapping("filter")
-    public String filter(@RequestParam String filter,
-                         Map<String, Object> model) {
-        Iterable<Message> messages;
-        if (filter != null && !filter.isEmpty()) {
-            messages = messageRepo.findByTag(filter);
-        } else {
-            messages = messageRepo.findAll();
-        }
-        model.put("messages", messages);
-        return "main";
     }
 }
 

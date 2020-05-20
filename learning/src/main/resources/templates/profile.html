@@ -20,10 +20,16 @@
             <div class="col-6 block" >
                 <img th:src="@{/img/myFace.png}" class="img-fluid center-block rounded-circle" alt="MyFace" style="max-height: 350px;">
             </div>
-            <div class="col-6 block">
+            <div class="col-4 block">
                 <p style="width: 100%;" class="mt-2 mb-2" th:text="'Ваш Логин: ' + ${login}"></p>
                 <p style="width: 100%;" class="mt-2 mb-2" th:text="'Ваш Курс: ' + ${curse}"></p>
                 <p style="width: 100%;" class="mt-2 mb-2" th:text="'Ваша Роль: ' + ${role}"></p>
+            </div>
+            <div class="col-2 block">
+                <form class="form-signing" action="/logout" method="post">
+                    <input type="button" class="form-button btn btn-outline-secondary" value="Выйти из аккаунта">
+                    <input type="hidden" name="_csrf" value="_csrf.token">
+                </form>
             </div>
         </div>
         <div class="row mb-5">
@@ -39,11 +45,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Задание 1</td>
-                        <td>dagas_sa</td>
-                        <td>https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3</td>
+                    <tr th:each="request : ${requests}">
+                        <td>request.id</td>
+                        <td>request.description</td>
+                        <td>request.creatorPR</td>
+                        <td>request.diffURL</td>
                     </tr>
                     </tbody>
                 </table>
@@ -58,3 +64,10 @@
 </div>
 </body>
 </html>
+
+<!--<tr th:each="customer : ${customers}">-->
+<!--    <td th:text="${customer.id}">Text ...</td>-->
+<!--    <td th:text="${customer.name}">Text ...</td>-->
+<!--    <td th:text="${customer.address}">Text ...</td>-->
+<!--    <td th:text="${customer.serviceRendered}">Text...</td>-->
+<!--</tr>-->

@@ -14,6 +14,12 @@ public class Task {
     private String name;
 
     @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    private Boolean isDone;
+
+    @OneToOne
     private Task previous;
 
     public Task() {
