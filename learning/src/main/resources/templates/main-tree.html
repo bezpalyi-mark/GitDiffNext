@@ -48,8 +48,23 @@
             <form>
                 <div class="form-group">
                     <label for="taskChoise">Задание:</label>
+<<<<<<< HEAD
                     <select class="form-control" id="taskChoise">
                         <option th:each="existTask : ${existTasks}" th:value="${existTask.name}" th:text="${existTask.name}"></option>
+=======
+                    <select class="form-control" name="selectTask" id="taskChoise">
+                        <option>DB_Config</option>
+                        <option>File_Downloader</option>
+                        <option>Ui_Intro</option>
+                        <option>DB_Console_Stream</option>
+                        <option>Office (intro)</option>
+                        <option>Cloud_Config</option>
+                        <option>DB_Group</option>
+                        <option>DB_Backup_Resole</option>
+                        <option>Remote_Explorer</option>
+                        <option>Final_Restuarant</option>
+                        <option>Tasklist</option>
+>>>>>>> origin/master
                     </select>
                 </div>
             </form>
@@ -64,7 +79,8 @@
         </div>
         <div class="col-2">
             <form class="form-signing" style="margin-top: 32px;">
-                <input type="button" class="form-button btn btn-outline-secondary" value="Отправить">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <input type="submit" class="form-button btn btn-outline-secondary" value="Отправить">
             </form>
         </div>
     </div>

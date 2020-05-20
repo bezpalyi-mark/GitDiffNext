@@ -54,4 +54,20 @@ public class Task {
     public void setPrevious(Task previous) {
         this.previous = previous;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Boolean getDone() {
+        return isDone;
+    }
+
+    public void setDone(Boolean done) {
+        isDone = done;
+    }
 }
