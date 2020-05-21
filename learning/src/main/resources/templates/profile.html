@@ -1,13 +1,16 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
-    <title th:text="(title)"/>
+    <title>Profile</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <style>
         .block{
             padding: 0;
             float: left;
+        }
+        .table-button{
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -26,9 +29,68 @@
                 <p style="width: 100%;" class="mt-2 mb-2" th:text="'Ваша Роль: ' + ${role}"></p>
             </div>
             <div class="col-2 block">
-                <form class="form-signing" th:action="@{/logout}" method="post" >
+                <form class="form-signing mb-2" th:action="@{/logout}" method="post" >
                     <input type="submit" class="form-button btn btn-outline-secondary" value="Выйти из аккаунта">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                </form>
+                <form class="form-signing" action="/profile-admin">
+                    <input type="submit" class="form-button btn btn-outline-secondary" value="Профиль администратора">
+                </form>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-12 mb-2">
+                <h2>Ваши MR</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Задание</th>
+                        <th>Студент</th>
+                        <th>MR</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>DB_Config</td>
+                        <td>dagas_sa</td>
+                        <td>https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3</td>
+                        <td style="padding: 0">
+                            <form>
+                                <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить">
+                            </form>
+                        </td>
+                        <td style="padding: 0">
+                            <form>
+                                <input type="button" class="form-button btn btn-outline-secondary table-button" value="Просмотреть">
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Ui_Intro</td>
+                        <td>dagas_sa</td>
+                        <td>https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3</td>
+                        <td style="padding: 0">
+                            <form>
+                                <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить">
+                            </form>
+                        </td>
+                        <td style="padding: 0">
+                            <form>
+                                <input type="button" class="form-button btn btn-outline-secondary table-button" value="Просмотреть">
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12 ">
+                <form class="form-signing">
+                    <input type="button" class="form-button btn btn-outline-secondary" value="Обновить">
                 </form>
             </div>
         </div>
