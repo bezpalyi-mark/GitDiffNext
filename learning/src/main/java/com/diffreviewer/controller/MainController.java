@@ -89,15 +89,6 @@ public class MainController {
         return "profile";
     }
 
-
-    @GetMapping("/main-tree")
-    public String main(@AuthenticationPrincipal User user, Map<String, Object> model) {
-        if(user == null) {
-            return "redirect:/login";
-        }
-        return "main-tree";
-    }
-
     @PostMapping("/main-tree")
     public String addRequest(@AuthenticationPrincipal User user,
                              @RequestParam String MR,
@@ -123,7 +114,10 @@ public class MainController {
     }
 
     @GetMapping("/main-tree")
-    public String main(Model model) {
+    public String main(@AuthenticationPrincipal User user, Model model) {
+        if(user == null) {
+            return "redirect:/login";
+        }
         List<ListTask> tasks = (List<ListTask>)listTaskRepo.findAll();
         if(tasks.size() == 0)
         {
