@@ -89,6 +89,40 @@ public class MainController {
         return "profile";
     }
 
+    @GetMapping("/profile-admin")
+    public String profileAdmin(Model model) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        User currentUser = userRepo.findByUsername(username);
+        if(currentUser == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("login", currentUser.getUsername());
+        model.addAttribute("curse", "novalab");
+        model.addAttribute("role", currentUser.getRoles());
+        if (currentUser.getRoles().contains(Role.ADMIN)) {
+            model.addAttribute("requests", mergeRequestRepo.findAll());
+            return "profile-admin";
+        }
+        List<Task> doneTasks = taskRepo.findByUserAndIsDone(currentUser, true);
+        List<MergeRequest> mergeRequestList = new ArrayList<>();
+        for (Task task : doneTasks) {
+            mergeRequestList.add(mergeRequestRepo.findByTaskAndStatusPR(task, Status.NOT_MERGED));
+        }
+        model.addAttribute("requests", mergeRequestList);
+        return "profile-admin";
+    }
+
+    @GetMapping("/admin-panel")
+    public String adminPanel(Model model){
+        return "admin-panel";
+    }
+
     @PostMapping("/main-tree")
     public String addRequest(@AuthenticationPrincipal User user,
                              @RequestParam String MR,
