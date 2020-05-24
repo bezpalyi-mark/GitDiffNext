@@ -89,13 +89,38 @@ public class MainController {
         return "profile";
     }
 
-
-    @GetMapping("/main-tree")
-    public String main(@AuthenticationPrincipal User user, Map<String, Object> model) {
-        if(user == null) {
+    @GetMapping("/profile-admin")
+    public String profileAdmin(Model model) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        User currentUser = userRepo.findByUsername(username);
+        if(currentUser == null) {
             return "redirect:/login";
         }
-        return "main-tree";
+        model.addAttribute("login", currentUser.getUsername());
+        model.addAttribute("curse", "novalab");
+        model.addAttribute("role", currentUser.getRoles());
+        if (currentUser.getRoles().contains(Role.ADMIN)) {
+            model.addAttribute("requests", mergeRequestRepo.findAll());
+            return "profile-admin";
+        }
+        List<Task> doneTasks = taskRepo.findByUserAndIsDone(currentUser, true);
+        List<MergeRequest> mergeRequestList = new ArrayList<>();
+        for (Task task : doneTasks) {
+            mergeRequestList.add(mergeRequestRepo.findByTaskAndStatusPR(task, Status.NOT_MERGED));
+        }
+        model.addAttribute("requests", mergeRequestList);
+        return "profile-admin";
+    }
+
+    @GetMapping("/admin-panel")
+    public String adminPanel(Model model){
+        return "admin-panel";
     }
 
     @PostMapping("/main-tree")
@@ -123,7 +148,10 @@ public class MainController {
     }
 
     @GetMapping("/main-tree")
-    public String main(Model model) {
+    public String main(@AuthenticationPrincipal User user, Model model) {
+        if(user == null) {
+            return "redirect:/login";
+        }
         List<ListTask> tasks = (List<ListTask>)listTaskRepo.findAll();
         if(tasks.size() == 0)
         {
