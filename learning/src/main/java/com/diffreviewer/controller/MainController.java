@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -79,16 +76,18 @@ public class MainController {
         model.addAttribute("login", currentUser.getUsername());
         model.addAttribute("curse", "novalab");
         model.addAttribute("role", currentUser.getRoles());
-        if (currentUser.getRoles().contains(Role.ADMIN)) {
-            model.addAttribute("requests", mergeRequestRepo.findAll());
-            return "profile";
-        }
         List<Task> doneTasks = taskRepo.findByUserAndIsDone(currentUser, true);
-        List<MergeRequest> mergeRequestList = new ArrayList<>();
-        for (Task task : doneTasks) {
-            mergeRequestList.add(mergeRequestRepo.findByTaskAndStatusPR(task, Status.NOT_MERGED));
+
+        if(doneTasks.size() > 0) {
+            List<MergeRequest> mergeRequestList = new ArrayList<>();
+            for (Task task : doneTasks) {
+                Optional<ListTask> byId = listTaskRepo.findById((long) task.getTask().getId());
+                byId.ifPresent(listTask -> mergeRequestList.add(mergeRequestRepo.findByTask_TaskAndStatusPR(listTask, Status.NOT_MERGED)));
+            }
+            if(mergeRequestList.size() > 0) {
+                model.addAttribute("requests", mergeRequestList.iterator());
+            }
         }
-        model.addAttribute("requests", mergeRequestList);
         return "profile";
     }
 
@@ -121,12 +120,8 @@ public class MainController {
         if(user == null) {
             return "redirect:/login";
         }
-        List<ListTask> tasks = (List<ListTask>)listTaskRepo.findAll();
-        if(tasks.size() == 0)
-        {
-            tasks.add(new ListTask(1, "No tasks", 0));
-        }
-        model.addAttribute("existTasks", tasks);
+        Iterable<ListTask> listTasks = listTaskRepo.findAll();
+        model.addAttribute("existTasks", listTasks);
         return "main-tree";
     }
 
