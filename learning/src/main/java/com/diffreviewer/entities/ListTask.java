@@ -7,11 +7,15 @@ import javax.persistence.*;
 public class ListTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String name;
 
-    private int level_task;
+    @Column(name = "level_task")
+    private int taskLevel;
+
+    @OneToOne
+    private ListTask previous;
 
     public ListTask(){
 
@@ -20,25 +24,34 @@ public class ListTask {
     /**
      * @param id
      * @param name
-     * @param level_task
+     * @param taskLevel
      */
-    public ListTask(int id, String name, int level_task) {
+    public ListTask(Long id, String name, int taskLevel, ListTask listTask) {
         this.id = id;
         this.name = name;
-        this.level_task = level_task;
+        this.taskLevel = taskLevel;
+        previous = listTask;
+    }
+
+    public ListTask getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(ListTask previous) {
+        this.previous = previous;
     }
 
     /**
      * @return the id
      */
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -59,15 +72,15 @@ public class ListTask {
     /**
      * @return the level_task
      */
-    public int getLevel_task() {
-        return level_task;
+    public int getTaskLevel() {
+        return taskLevel;
     }
 
     /**
      * @param level_task the level_task to set
      */
-    public void setLevel_task(int level_task) {
-        this.level_task = level_task;
+    public void setTaskLevel(int level_task) {
+        this.taskLevel = level_task;
     }
 
     
