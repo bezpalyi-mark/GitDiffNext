@@ -25,7 +25,7 @@ public class UserController {
     @GetMapping
     public String adminPage(Model model) {
         model.addAttribute("curse", "example");
-        model.addAttribute("login", "example");
+        model.addAttribute("login", "example58");
         model.addAttribute("role", "admin");
 
         model.addAttribute("requests", mergeRequestRepo.findAll());
