@@ -88,13 +88,6 @@
                         </form>
                     </td>
                 </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
                 </tbody>
             </table>
         </div>
@@ -117,20 +110,13 @@
                     <thead>
                     <tr>
                         <th>Логин</th>
-                        <th>Курс</th>
                         <th>Роль</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>dagas_sa</td>
-                        <td>novalab</td>
-                        <td>ADMIN</td>
-                    </tr>
-                    <tr>
-                        <td>hunterlen</td>
-                        <td>novalab</td>
-                        <td>ADMIN</td>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.username}"></td>
+                        <td th:text="${user.roles}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -155,20 +141,13 @@
                     <thead>
                     <tr>
                         <th>Название</th>
-                        <th>Курс</th>
-                        <th>Краткое описание</th>
+                        <th>После задания</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>DB_Config</td>
-                        <td>novalab</td>
-                        <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
-                    </tr>
-                    <tr>
-                        <td>File_Downloader</td>
-                        <td>novalab</td>
-                        <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
+                    <tr th:each="task : ${tasks}">
+                        <td th:text="${task.name}"></td>
+                        <td th:text="${task.previous}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -206,7 +185,7 @@
                             <td>Not available</td>
                         </tr>
                         <tr>
-                            <td>hunterlen</td>
+                            <td>hunterlan</td>
                             <td>In Progress</td>
                             <td>Not available</td>
                             <td>Complete</td>
