@@ -1,0 +1,13 @@
+diff --git a/file.txt b/file.txt
+new file mode 100644
+index 0000000..27b65cf
+--- /dev/null
++++ b/file.txt
+@@ -0,0 +1,7 @@
++some text...
++
++
++blablabla
++some text eshche
++
++kakaya to stroka...
