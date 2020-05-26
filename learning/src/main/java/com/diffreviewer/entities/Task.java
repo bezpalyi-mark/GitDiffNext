@@ -20,15 +20,16 @@ public class Task {
     private Boolean isDone;
 
     @OneToOne
-    private Task previous;
+    @JoinColumn(name = "task_from_list_id")
+    private ListTask task;
 
     public Task() {
     }
 
-    public Task(Long id, String name, Task previous) {
+    public Task(Long id, String name, ListTask task) {
         this.id = id;
         this.name = name;
-        this.previous = previous;
+        this.task = task;
     }
 
     public Long getId() {
@@ -47,14 +48,6 @@ public class Task {
         this.name = name;
     }
 
-    public Task getPrevious() {
-        return previous;
-    }
-
-    public void setPrevious(Task previous) {
-        this.previous = previous;
-    }
-
     public User getUser() {
         return user;
     }
@@ -69,5 +62,13 @@ public class Task {
 
     public void setDone(Boolean done) {
         isDone = done;
+    }
+
+    public ListTask getTask() {
+        return task;
+    }
+
+    public void setTask(ListTask task) {
+        this.task = task;
     }
 }
