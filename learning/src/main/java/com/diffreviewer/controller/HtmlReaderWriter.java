@@ -8,19 +8,11 @@ public class HtmlReaderWriter {
 
     public static final String REQUEST_END = "</body>";
 
-    public static final String DIFF_REV_BEGIN = "<!DOCTYPE HTML>\n" +
-            "<html xmlns:th=\"http://www.thymeleaf.org\">\n" +
-            "<head>\n" +
-            "    <title>Diff</title>\n" +
-            "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n" +
-            "    <link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css\">\n" +
-            "</head>\n" +
-            "<body>\n" +
-            "<header th:insert=\"blocks/header :: header\"></header>\n";
+    public static final String DIFF_REV_BEGIN = "<div th:fragment = \"diff_rev\">\n";
 
-    public static final String DIFF_REV_END = "</body>\n";
+    public static final String DIFF_REV_END = "</div>\n";
 
-    private String pathToDiffRevFile = "./src/main/resources/templates/diff_rev.html";
+    private String pathToDiffRevFile = "./src/main/resources/templates/blocks/diff_rev.html";
 
     public String getBody(String path) throws IOException {
         File file = new File(path);
@@ -62,6 +54,6 @@ public class HtmlReaderWriter {
 
     public static void main(String[] args) throws IOException {
         HtmlReaderWriter htmlReaderWriter = new HtmlReaderWriter();
-        htmlReaderWriter.writeToDiffRev(htmlReaderWriter.getBody("./output-file.html"));
+        htmlReaderWriter.writeToDiffRev(htmlReaderWriter.getBody("./src/main/resources/static/diffFilesHtml/mark.html"));
     }
 }

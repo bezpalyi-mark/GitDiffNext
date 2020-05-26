@@ -90,7 +90,7 @@ public class ProfileController {
     }
 
     @PostMapping("/show")
-    public void Translator(User user, String url)
+    public String Translator(User user, String url)
     {
         GitApi api = new GitApi(url);
         String diff_url = api.GetPR(user).getDiffURL();
@@ -111,11 +111,10 @@ public class ProfileController {
         {
             e.printStackTrace();
         }
+
+        return "profile";
     }
 
-    @GetMapping("/diff_rev")
-    public void Diff2Html(@AuthenticationPrincipal User user) {
-        Translator(user, "https://try.gitea.io/AlexKushch/test/pulls/2");
-    }
+
 
 }
