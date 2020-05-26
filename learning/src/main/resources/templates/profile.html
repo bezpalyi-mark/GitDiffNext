@@ -66,22 +66,6 @@
                             </form>
                         </td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Ui_Intro</td>
-                        <td>dagas_sa</td>
-                        <td>https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3</td>
-                        <td style="padding: 0">
-                            <form>
-                                <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить">
-                            </form>
-                        </td>
-                        <td style="padding: 0">
-                            <form>
-                                <input type="button" class="form-button btn btn-outline-secondary table-button" value="Просмотреть">
-                            </form>
-                        </td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -101,6 +85,7 @@
                         <th>Задание</th>
                         <th>Студент</th>
                         <th>MR</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -109,6 +94,11 @@
                         <td th:text="${request.descriptionPR}">Text...</td>
                         <td th:text="${request.creatorPR.username}">Text...</td>
                         <td th:text="${request.diffURL}">Text...</td>
+                        <td style="padding: 0">
+                            <form>
+                                <input type="button" class="form-button btn btn-outline-secondary table-button" value="Просмотреть">
+                            </form>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
