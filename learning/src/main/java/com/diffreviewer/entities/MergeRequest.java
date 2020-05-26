@@ -36,15 +36,19 @@ public class MergeRequest {
     @JoinColumn(name = "task_id")
     private Task task;
 
+    @Column(name = "approve_count")
+    private int approveCount;
+
     public MergeRequest() {
     }
 
-    public MergeRequest(String titlePR, String descriptionPR, User creatorPR, Status statusPR, String diffURL) {
+    public MergeRequest(String titlePR, String descriptionPR, User creatorPR, Status statusPR, String diffURL, int approveCount) {
         this.titlePR = titlePR;
         this.descriptionPR = descriptionPR;
         this.creatorPR = creatorPR;
         this.statusPR = statusPR;
         this.diffURL = diffURL;
+        this.approveCount = approveCount;
     }
 
     public String getTitlePR() {
@@ -101,5 +105,13 @@ public class MergeRequest {
 
     public void setTask(Task task) {
         this.task = task;
+    }
+
+    public int getApproveCount() {
+        return approveCount;
+    }
+
+    public void setApproveCount(int approveCount) {
+        this.approveCount = approveCount;
     }
 }
