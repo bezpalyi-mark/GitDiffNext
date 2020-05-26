@@ -16,9 +16,9 @@ public class HtmlReaderWriter {
             "    <link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css\">\n" +
             "</head>\n" +
             "<body>\n" +
-            "<header th:insert=\"blocks/header :: header\"></header>";
+            "<header th:insert=\"blocks/header :: header\"></header>\n";
 
-    public static final String DIFF_REV_END = "</body>";
+    public static final String DIFF_REV_END = "</body>\n";
 
     private String pathToDiffRevFile = "./src/main/resources/templates/diff_rev.html";
 
