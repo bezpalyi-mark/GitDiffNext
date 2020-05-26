@@ -89,10 +89,12 @@ public class ProfileController {
         return "main-tree";
     }
 
+//    @PostMapping("/show")
     @PostMapping("/show")
-    public String Translator(User user, String url)
-    {
+    public String Translator(User user, String url) {
+
         GitApi api = new GitApi(url);
+        HtmlReaderWriter htmlReaderWriter = new HtmlReaderWriter();
         String diff_url = api.GetPR(user).getDiffURL();
         InputStream in;
         try {
@@ -106,15 +108,24 @@ public class ProfileController {
         Process p;
         try
         {
-            p = Runtime.getRuntime().exec("diff2html -F output-file.html -i file -- input.diff");
+            p = Runtime.getRuntime().exec("diff2html -F ./src/main/resources/templates/output-file.html -o stdout -i file -- input.diff");
         } catch(IOException e)
         {
             e.printStackTrace();
         }
+        try {
+            String body = htmlReaderWriter.getBody("./src/main/resources/templates/output-file.html");
+            htmlReaderWriter.writeToDiffRev(body);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        return "profile";
+        return "redirect:/dif-show";
     }
 
-
+    @GetMapping("/dif-show")
+    public String outputFile() {
+        return "dif-show";
+    }
 
 }
