@@ -148,7 +148,6 @@ public class MainController {
         }
 
         Process p;
-        //NEED INSTALL THROUGH NPM
         try
         {
             p = Runtime.getRuntime().exec("diff2html -F output-file.html -i file -- input.diff");
