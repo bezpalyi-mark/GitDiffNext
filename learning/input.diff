@@ -1,0 +1,30 @@
+diff --git a/file.txt b/file.txt
+new file mode 100644
+index 0000000..27b65cf
+--- /dev/null
++++ b/file.txt
+@@ -0,0 +1,7 @@
++some text...
++
++
++blablabla
++some text eshche
++
++kakaya to stroka...
+diff --git a/file1.txt b/file1.txt
+new file mode 100644
+index 0000000..c68e32a
+--- /dev/null
++++ b/file1.txt
+@@ -0,0 +1 @@
++Soooooooooooome body once told me the world is gona roll me
+\ No newline at end of file
+diff --git a/file2.txt b/file2.txt
+new file mode 100644
+index 0000000..6730ae6
+--- /dev/null
++++ b/file2.txt
+@@ -0,0 +1,2 @@
++Shcheeeeee ne vmerlaaaa Uuuuukraini ni slava ni voooooolyaa
++Shcheeeeee nam bratiyam molodiiiim usmihnetsya dooolyaaa
+\ No newline at end of file

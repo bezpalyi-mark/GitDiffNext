@@ -7,7 +7,7 @@ VALUES ('5E884898DA28047151D0E56F8DC6292773603D0D6AABBDD62A11EF721D1542D8', 'krh
 
 INSERT INTO user_role(user_id, role) VALUES (3, 'ADMIN'),
                                             (2, 'USER'),
-                                            (3, 'USER');
+                                            (1, 'USER');
 
 INSERT INTO list_task(id, level_task, name, previous_id)
 VALUES (1, 1, 'Day1', NULL), (2, 2, 'Day2', 1), (3, 3, 'Day3', 2);

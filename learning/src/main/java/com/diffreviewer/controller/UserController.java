@@ -1,6 +1,8 @@
 package com.diffreviewer.controller;
 
+import com.diffreviewer.entities.ListTask;
 import com.diffreviewer.entities.User;
+import com.diffreviewer.repos.ListTaskRepo;
 import com.diffreviewer.repos.MergeRequestRepo;
 import com.diffreviewer.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class UserController {
     private UserRepo userRepo;
 
     @Autowired
+    private ListTaskRepo listTaskRepo;
+
+    @Autowired
     private MergeRequestRepo mergeRequestRepo;
 
     @GetMapping
@@ -34,6 +39,11 @@ public class UserController {
 
     @GetMapping("/admin-panel")
     public String adminPanel(Model model) {
+        Iterable<User> users = userRepo.findAll();
+        Iterable<ListTask> tasks = listTaskRepo.findAll();
+
+        model.addAttribute("users", users);
+        model.addAttribute("tasks", tasks);
 
         return "admin-panel";
     }
