@@ -17,11 +17,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 
 @Controller
 public class MainController {
@@ -61,7 +67,10 @@ public class MainController {
     }
 
     @GetMapping("/profile")
-    public String profile(Model model) {
+    public String profile(@AuthenticationPrincipal User user, Model model) {
+        if (user.getRoles().contains(Role.ADMIN)) {
+            return "redirect:/user";
+        }
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
         if (principal instanceof UserDetails) {
@@ -70,69 +79,37 @@ public class MainController {
             username = principal.toString();
         }
         User currentUser = userRepo.findByUsername(username);
-        if(currentUser == null) {
+        if (currentUser == null) {
             return "redirect:/login";
         }
         model.addAttribute("login", currentUser.getUsername());
         model.addAttribute("curse", "novalab");
         model.addAttribute("role", currentUser.getRoles());
-        if (currentUser.getRoles().contains(Role.ADMIN)) {
-            model.addAttribute("requests", mergeRequestRepo.findAll());
-            return "profile";
-        }
         List<Task> doneTasks = taskRepo.findByUserAndIsDone(currentUser, true);
-        List<MergeRequest> mergeRequestList = new ArrayList<>();
-        for (Task task : doneTasks) {
-            mergeRequestList.add(mergeRequestRepo.findByTaskAndStatusPR(task, Status.NOT_MERGED));
+
+        if (doneTasks.size() > 0) {
+            List<MergeRequest> mergeRequestList = new ArrayList<>();
+            for (Task task : doneTasks) {
+                Optional<ListTask> byId = listTaskRepo.findById((long) task.getTask().getId());
+                byId.ifPresent(listTask -> mergeRequestList
+                        .add(mergeRequestRepo.findByTask_TaskAndStatusPR(listTask, Status.NOT_MERGED)));
+            }
+            if (mergeRequestList.size() > 0) {
+                model.addAttribute("requests", mergeRequestList.iterator());
+            }
         }
-        model.addAttribute("requests", mergeRequestList);
         return "profile";
     }
 
-    @GetMapping("/profile-admin")
-    public String profileAdmin(Model model) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username;
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-        User currentUser = userRepo.findByUsername(username);
-        if(currentUser == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("login", currentUser.getUsername());
-        model.addAttribute("curse", "novalab");
-        model.addAttribute("role", currentUser.getRoles());
-        if (currentUser.getRoles().contains(Role.ADMIN)) {
-            model.addAttribute("requests", mergeRequestRepo.findAll());
-            return "profile-admin";
-        }
-        List<Task> doneTasks = taskRepo.findByUserAndIsDone(currentUser, true);
-        List<MergeRequest> mergeRequestList = new ArrayList<>();
-        for (Task task : doneTasks) {
-            mergeRequestList.add(mergeRequestRepo.findByTaskAndStatusPR(task, Status.NOT_MERGED));
-        }
-        model.addAttribute("requests", mergeRequestList);
-        return "profile-admin";
-    }
-
-    @GetMapping("/admin-panel")
-    public String adminPanel(Model model){
-        return "admin-panel";
-    }
-
     @PostMapping("/main-tree")
-    public String addRequest(@AuthenticationPrincipal User user,
-                             @RequestParam String MR,
-                             @RequestParam String taskChoise,
-                             Model model) {
-//        if (!MR.matches("https?:\\/\\/(www\\.)?" +
-//                "[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)")) {
-//            System.out.println("Bad url!");
-//            return "/main-tree";
-//        }
+    public String addRequest(@AuthenticationPrincipal User user, @RequestParam String MR,
+            @RequestParam String taskChoise, Model model) {
+        // if (!MR.matches("https?:\\/\\/(www\\.)?" +
+        // "[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"))
+        // {
+        // System.out.println("Bad url!");
+        // return "/main-tree";
+        // }
         Task task = taskRepo.findByNameAndUser(taskChoise, user);
         if (task == null) {
             System.out.println("No task for this user given!");
@@ -140,7 +117,7 @@ public class MainController {
         }
         GitApi gitApi = new GitApi(MR);
         MergeRequest mergeRequest = gitApi.GetPR(user);
-        if(mergeRequest != null) {
+        if (mergeRequest != null) {
             mergeRequest.setTask(task);
             mergeRequestRepo.save(mergeRequest);
         }
@@ -149,17 +126,41 @@ public class MainController {
 
     @GetMapping("/main-tree")
     public String main(@AuthenticationPrincipal User user, Model model) {
-        if(user == null) {
+        if (user == null) {
             return "redirect:/login";
         }
-        List<ListTask> tasks = (List<ListTask>)listTaskRepo.findAll();
-        if(tasks.size() == 0)
-        {
-            tasks.add(new ListTask(1, "No tasks", 0));
-        }
-        model.addAttribute("existTasks", tasks);
+        Iterable<ListTask> listTasks = listTaskRepo.findAll();
+        model.addAttribute("existTasks", listTasks);
         return "main-tree";
     }
 
+    public void Translator(User user, String url)
+    {
+        GitApi api = new GitApi(url);
+        String diff_url = api.GetPR(user).getDiffURL();
+        InputStream in;
+        try {
+            in = new URL(diff_url).openStream();
+            Files.copy(in, Paths.get("input.diff"), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        Process p;
+        //NEED INSTALL THROUGH NPM
+        try
+        {
+            p = Runtime.getRuntime().exec("diff2html -F output-file.html -i file -- input.diff");
+        } catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @GetMapping("/diff_rev")
+    public void Diff2Html(@AuthenticationPrincipal User user) {
+        Translator(user, "https://try.gitea.io/AlexKushch/test/pulls/2");
+    }
 }
 

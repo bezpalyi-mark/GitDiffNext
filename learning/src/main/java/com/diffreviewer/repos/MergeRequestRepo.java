@@ -1,5 +1,6 @@
 package com.diffreviewer.repos;
 
+import com.diffreviewer.entities.ListTask;
 import com.diffreviewer.entities.MergeRequest;
 import com.diffreviewer.entities.Status;
 import com.diffreviewer.entities.Task;
@@ -9,4 +10,6 @@ import java.util.List;
 
 public interface MergeRequestRepo extends CrudRepository<MergeRequest, Long> {
     MergeRequest findByTaskAndStatusPR(Task task, Status status);
+    MergeRequest findByTaskNameAndStatusPR(String taskName, Status status);
+    MergeRequest findByTask_TaskAndStatusPR(ListTask taskFromList, Status status);
 }
