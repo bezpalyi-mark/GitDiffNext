@@ -9,8 +9,16 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <style>
         .table-button{
-            margin-top: 5px;
+            /*margin-top: 5px;*/
+            height: 100%;
+            width: 100%;
         }
+
+        .td-button{
+            text-align: center;
+            padding: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -21,68 +29,30 @@
     <!--    Выбор сущности для редактирования    -->
     <div class="row mt-5 mb-5">
         <div class="col-12 mb-2">
-            <table class="table">
+
+            <h3>Участники</h3>
+            <table class="table table-bordered">
                 <thead>
+                <tr>
+                    <th>Логин</th>
+                    <th>Роль</th>
+                </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Участники</td>
-                    <td style="padding: 0">
-                        <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#sub">Просмотреть</button>
-                    </td>
-                    <td style="padding: 0">
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.roles}"></td>
+                    <td class="td-button">
                         <form>
                             <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">
                         </form>
                     </td>
-                    <td style="padding: 0">
+                    <td class="td-button">
                         <form>
                             <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">
                         </form>
                     </td>
-                    <td style="padding: 0">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Задания</td>
-                    <td style="padding: 0">
-                        <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#tasks">Просмотреть</button>
-                    </td>
-                    <td style="padding: 0">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">
-                        </form>
-                    </td>
-                    <td style="padding: 0">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">
-                        </form>
-                    </td>
-                    <td style="padding: 0">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">
-                        </form>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Успеваемость</td>
-                    <td style="padding: 0">
-                        <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#progress">Просмотреть</button>
-                    </td>
-                    <td style="padding: 0">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">
-                        </form>
-                    </td>
-                    <td style="padding: 0">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">
-                        </form>
-                    </td>
-                    <td style="padding: 0">
+                    <td class="td-button">
                         <form>
                             <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">
                         </form>
@@ -90,44 +60,145 @@
                 </tr>
                 </tbody>
             </table>
+
+            <h3>Задания</h3>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Краткое описание</th>
+                    <th>После задания</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task : ${tasks}">
+                    <td th:text="${task.name}"></td>
+                    <td class="td-button">
+                        <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#taskDescription">Просмотреть</button>
+                    </td>
+                    <td th:text="${task.previous}"></td>
+                    <td class="td-button">
+                        <form>
+                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">
+                        </form>
+                    </td>
+                    <td class="td-button">
+                        <form>
+                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">
+                        </form>
+                    </td>
+                    <td class="td-button">
+                        <form>
+                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h3>Успеваемость</h3>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Логин</th>
+                    <th>DB_Config</th>
+                    <th>File_Downloader</th>
+                    <th>Ui_Intro</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>dagas_sa</td>
+                    <td>Complete</td>
+                    <td>In Progress</td>
+                    <td>Not available</td>
+                </tr>
+                <tr>
+                    <td>hunterlan</td>
+                    <td>In Progress</td>
+                    <td>Not available</td>
+                    <td>Complete</td>
+                </tr>
+                </tbody>
+            </table>
+
+
+<!--            <table class="table">-->
+<!--                <thead>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr>-->
+<!--                    <td>Участники</td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#sub">Просмотреть</button>-->
+<!--                    </td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <form>-->
+<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <form>-->
+<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <form>-->
+<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>Задания</td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#tasks">Просмотреть</button>-->
+<!--                    </td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <form>-->
+<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <form>-->
+<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <form>-->
+<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td>Успеваемость</td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#progress">Просмотреть</button>-->
+<!--                    </td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <form>-->
+<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <form>-->
+<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                    <td style="padding: 0">-->
+<!--                        <form>-->
+<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
         </div>
     </div>
 
 </div>
 </body>
 <!-- Modal -->
-<div class="modal fade" id="sub" tabindex="-1" role="dialog" aria-labelledby="subTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="subTitle">Участники</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Логин</th>
-                        <th>Роль</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="user : ${users}">
-                        <td th:text="${user.username}"></td>
-                        <td th:text="${user.roles}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="tasks" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="taskDescription" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -137,61 +208,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Название</th>
-                        <th>После задания</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="task : ${tasks}">
-                        <td th:text="${task.name}"></td>
-                        <td th:text="${task.previous}"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="progress" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="progressTitle">Успеваемость</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Логин</th>
-                            <th>DB_Config</th>
-                            <th>File_Downloader</th>
-                            <th>Ui_Intro</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>dagas_sa</td>
-                            <td>Complete</td>
-                            <td>In Progress</td>
-                            <td>Not available</td>
-                        </tr>
-                        <tr>
-                            <td>hunterlan</td>
-                            <td>In Progress</td>
-                            <td>Not available</td>
-                            <td>Complete</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <p>С другой стороны рамки и место обучения кадров в значительной степени обуславливает создание позиций, занимаемых участниками в отношении поставленных задач. Идейные соображения высшего порядка, а также новая модель организационной деятельности требуют от нас анализа форм развития.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
