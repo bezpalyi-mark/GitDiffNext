@@ -19,6 +19,11 @@
             padding: 0;
         }
 
+        .fl-l{
+            float: left;
+        }
+
+
     </style>
 </head>
 <body>
@@ -43,18 +48,18 @@
                     <td th:text="${user.username}"></td>
                     <td th:text="${user.roles}"></td>
                     <td class="td-button">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">
+                        <form:form method="POST" action="deleteUser">
+                            <input type="button" class="form-button btn btn-outline-secondary table-button"  value="Удалить поле">
                         </form>
                     </td>
                     <td class="td-button">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">
+                        <form:form method="POST" action="addUser">
+                            <input type="button" class="form-button btn btn-outline-secondary table-button" data-target="#userAdd" data-toggle="modal" value="Добавить поле">
                         </form>
                     </td>
                     <td class="td-button">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">
+                        <form:form method="POST" action="insertUser">
+                            <input type="button" class="form-button btn btn-outline-secondary table-button" data-target="#userChange" data-toggle="modal" value="Изменить поле">
                         </form>
                     </td>
                 </tr>
@@ -78,18 +83,18 @@
                     </td>
                     <td th:text="${task.previous}"></td>
                     <td class="td-button">
-                        <form>
+                        <form:form method="POST" action="deleteTask">
                             <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">
                         </form>
                     </td>
                     <td class="td-button">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">
+                        <form:form method="POST" action="insertTask">
+                            <input type="button" class="form-button btn btn-outline-secondary table-button" data-toggle="modal" data-target="#taskAdd" value="Добавить поле">
                         </form>
                     </td>
                     <td class="td-button">
-                        <form>
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">
+                        <form:form method="POST" action="changeTask">
+                            <input type="button" class="form-button btn btn-outline-secondary table-button" data-toggle="modal" data-target="#taskChange" value="Изменить поле">
                         </form>
                     </td>
                 </tr>
@@ -123,75 +128,6 @@
             </table>
 
 
-<!--            <table class="table">-->
-<!--                <thead>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr>-->
-<!--                    <td>Участники</td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#sub">Просмотреть</button>-->
-<!--                    </td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <form>-->
-<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">-->
-<!--                        </form>-->
-<!--                    </td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <form>-->
-<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">-->
-<!--                        </form>-->
-<!--                    </td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <form>-->
-<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">-->
-<!--                        </form>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>Задания</td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#tasks">Просмотреть</button>-->
-<!--                    </td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <form>-->
-<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">-->
-<!--                        </form>-->
-<!--                    </td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <form>-->
-<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">-->
-<!--                        </form>-->
-<!--                    </td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <form>-->
-<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">-->
-<!--                        </form>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td>Успеваемость</td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#progress">Просмотреть</button>-->
-<!--                    </td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <form>-->
-<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">-->
-<!--                        </form>-->
-<!--                    </td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <form>-->
-<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">-->
-<!--                        </form>-->
-<!--                    </td>-->
-<!--                    <td style="padding: 0">-->
-<!--                        <form>-->
-<!--                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">-->
-<!--                        </form>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
         </div>
     </div>
 
@@ -216,4 +152,122 @@
         </div>
     </div>
 </div>
+
+<!-- Модальное окно для добавления в юзеры -->
+
+<div class="modal fade" id="userAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userAddTitle">Задания</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="form-signing" action="" method="post">
+                        <div class="col-6 mb-3 fl-l" ><label for="user_name_add"> </label> <input id="user_name_add" class="input-control" type="text" name="username" placeholder="Новый логин" autofocus/> </div>
+                        <div class="col-6 mb-3 fl-l"><label for="password_add"> </label><input id="password_add" class="input-control" type="password" name="password" placeholder="Новый пароль"/> </div>
+                        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                        <div class="col-12 fl-l" style="margin-left: 3px"><input type="submit" class="form-button" value="Добавить пользователя"/></div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для изменения юзера, должны отображаться исходные данные -->
+
+<div class="modal fade" id="userChange" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userChangeTitle">Задания</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="form-signing" action="" method="post">
+                        <div class="col-6 mb-3 fl-l"><label for="user_name_change"> </label> <input id="user_name_change" class="input-control" type="text" name="username" placeholder="Ваш логин" autofocus/> </div>
+                        <div class="col-6 mb-3 fl-l"><label for="password_change"> </label><input id="password_change" class="input-control" type="password" name="password" placeholder="Ваш логин"/> </div>
+                        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                        <div class="col-12 fl-l" style="margin-left: 3px;"><input type="submit" class="form-button" value="Изменить пользователя"/></div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Модальное окно для добавления в таски -->
+
+<div class="modal fade" id="taskAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskAddTitle">Задания</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="form-signing" action="" method="post">
+                        <div class="col-6 mb-3 fl-l"><label for="user_name_add"> </label> <input id="task_name_add" class="input-control" type="text" name="task-name" placeholder="Название задания" autofocus/> </div>
+                        <div class="col-6 mb-3 fl-l"><label for="task_after_add"> </label><input id="task_after_add" class="input-control" type="text" name="task-after" placeholder="После задания"/> </div>
+                        <div class="col-12 mb-3 fl-l"><label for="task_short_description_add"> </label><input id="task_short_description_add" class="input-control" type="text" name="task-short-description" placeholder="Краткое описание"/> </div>
+                        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                    </form>
+                </div>
+                <div><input type="submit" class="form-button" value="Добавить задание"/></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для изменения таска, должны отображаться исходные данные -->
+
+<div class="modal fade" id="taskChange" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskChangeTitle">Задания</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="form-signing" action="" method="post">
+                        <div class="col-6 mb-3 fl-l"><label for="user_name_change"> </label> <input id="task_name_change" class="input-control" type="text" name="task-name" placeholder="Название задания" autofocus/> </div>
+                        <div class="col-6 mb-3 fl-l"><label for="task_after_change"> </label><input id="task_after_change" class="input-control" type="text" name="task-after" placeholder="После задания"/> </div>
+                        <div class="col-12 mb-3 fl-l"><label for="task_short_description_change"> </label><input id="task_short_description_change" class="input-control" type="text" name="task-short-description" placeholder="Краткое описание"/> </div>
+                        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                    </form>
+                </div>
+                <div><input type="submit" class="btn btn-outline-secondary form-button" value="Изменить задание"/></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </html>

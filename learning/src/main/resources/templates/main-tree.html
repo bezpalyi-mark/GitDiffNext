@@ -21,9 +21,10 @@
         <div class="col-4">
                 <div class="form-group">
                     <label for="taskChoise">Задание:</label>
-
-                    <select class="form-control" name="selectTask" id="taskChoise">
-                        <option th:each="existTask : ${existTasks}" th:value="${existTask.name}" th:text="${existTask.name}"></option>
+                    <select class="form-control" name="taskChoise" id="taskChoise">
+                        <option name="taskChoise" th:each="existTask : ${existTasks}" th:value="${existTask.name}" th:text="${existTask.name}">
+                        </option>
+                        
                     </select>
                 </div>
         </div>
