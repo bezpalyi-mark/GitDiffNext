@@ -83,7 +83,7 @@
                     </td>
                     <td th:text="${task.previous}"></td>
                     <td class="td-button">
-                        <form>
+                        <form:form method="POST" action="deleteTask">
                             <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">
                         </form>
                     </td>
