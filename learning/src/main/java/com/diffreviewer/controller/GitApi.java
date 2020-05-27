@@ -58,10 +58,10 @@ public class GitApi {
 
         mergeRequest.setTitlePR(result.getTitle());  // Get title.
         mergeRequest.setDescriptionPR(result.getBody()); // Get description.
-        // if(!user.getUsername().equals(result.getUser().getLogin())) {
-        //     System.out.println("Wrong user of MR");
-        //     return null;
-        // }
+        if(!user.getUsername().equals(result.getUser().getLogin())) {
+            System.out.println("Wrong user of MR");
+            return null;
+        }
         mergeRequest.setCreatorPR(user);  // Get creator.
 
         /// Class 'PullRequest' has two field. State(open, close), Merged(merged, not merged).
