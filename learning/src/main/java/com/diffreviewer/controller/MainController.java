@@ -1,5 +1,6 @@
 package com.diffreviewer.controller;
 
+import com.diffreviewer.entities.ListTask;
 import com.diffreviewer.entities.MergeRequest;
 import com.diffreviewer.entities.Role;
 import com.diffreviewer.entities.Task;
@@ -33,6 +34,9 @@ public class MainController {
     @Autowired
     private TaskRepo taskRepo;
 
+    @Autowired
+    private ListTaskRepo listTaskRepo;
+
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
         if (!adminExists) {
@@ -55,13 +59,15 @@ public class MainController {
 
     @PostMapping("/main-tree")
     public String addRequest(@AuthenticationPrincipal User user, @RequestParam String MR,
-            @RequestParam String taskChoise, Model model) {
+            @RequestParam("taskChoise") String taskChoise, Model model) {
         // if (!MR.matches("https?:\\/\\/(www\\.)?" +
         // "[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"))
         // {
         // System.out.println("Bad url!");
         // return "/main-tree";
         // }
+        Iterable<ListTask> listTasks = listTaskRepo.findAll();
+        model.addAttribute("existTasks", listTasks);
         Task task = taskRepo.findByNameAndUser(taskChoise, user);
         if (task == null) {
             System.out.println("No task for this user given!");
