@@ -1,5 +1,8 @@
 package com.diffreviewer.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.diffreviewer.entities.ListTask;
 import com.diffreviewer.entities.User;
 import com.diffreviewer.repos.ListTaskRepo;
@@ -10,8 +13,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/user")
@@ -44,6 +49,44 @@ public class UserController {
 
         model.addAttribute("users", users);
         model.addAttribute("tasks", tasks);
+
+        return "admin-panel";
+    }
+
+    @RequestMapping(value = "/deleteTask", method = RequestMethod.POST)
+    public String deleteTaskRow(@ModelAttribute("ListTaskModel") ListTask toDeleteTask) 
+    {
+        listTaskRepo.delete(toDeleteTask);
+
+        return "admin-panel";
+    }
+
+    @RequestMapping(value = "/insertTask", method = RequestMethod.POST)
+    public String insertTaskRow(@ModelAttribute("ListTaskModel") ListTask insertTask) 
+    {
+        listTaskRepo.save(insertTask);
+
+        return "admin-panel";
+    }
+
+    @RequestMapping(value = "/changeTask", method = RequestMethod.POST)
+    public String changeTaskRow(@ModelAttribute("ListTaskModel") ListTask toChangeTask) 
+    {
+        List<ListTask> tasks = new ArrayList<ListTask>();
+        listTaskRepo.findAll().forEach(tasks::add);
+
+        for(ListTask task : tasks)
+        {
+            if(task.getName() == toChangeTask.getName() ||
+                task.getPrevious() == toChangeTask.getPrevious() || 
+                task.getTaskLevel() == toChangeTask.getTaskLevel())
+                {
+                    toChangeTask.setId(task.getId());
+                    break;
+                }
+        }
+
+        listTaskRepo.save(toChangeTask);
 
         return "admin-panel";
     }
