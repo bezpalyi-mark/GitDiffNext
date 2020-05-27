@@ -10,12 +10,22 @@ INSERT INTO user_role(user_id, role) VALUES (3, 'ADMIN'),
                                             (1, 'USER');
 
 INSERT INTO list_task(id, level_task, name, previous_id)
-VALUES (1, 1, 'Day1', NULL), (2, 2, 'Day2', 1), (3, 3, 'Day3', 2);
+VALUES (1, 1, 'DB_CONFIG', NULL),
+       (2, 1, 'FILE_DOWNLOADER', NULL),
+       (3, 1, 'UI_INTRO', NULL),
+       (4, 2, 'DB_CONSOLE_STREAM', 1),
+       (5, 2, 'OFFICE', 1),
+       (6, 2, 'CLOUD_CONFIG', 1),
+       (7, 3, 'DB_GROUPS', 5),
+       (8, 3, 'DB_BACKUP_RESORE', 6),
+       (9, 3, 'REMOTE_EXPLORER', 6),
+       (10, 3, 'FINAL_RESTUARANT', 6),
+       (11, 4, 'TASKLIST', 7);
 
-INSERT INTO task (id, is_done, name, task_from_list_id, user_id) VALUES (1, 0, 'Second', 3, 1),
-                                                                        (2, 0, 'First', 2, 2),
-                                                                        (3, 0, 'Third', 1, 3),
-                                                                        (4, 1, 'First', 1, 2);
+INSERT INTO task (id, is_done, name, task_from_list_id, user_id) VALUES (1, 0, 'UI_INTRO', 3, 1),
+                                                                        (2, 1, 'FILE_DOWNLOADER', 2, 2),
+                                                                        (3, 0, 'DB_CONFIG', 1, 3),
+                                                                        (4, 0, 'UI_INTRO', 3, 2);
 
 INSERT INTO request(description_pr, diff_url, status, title_pr, creator_pr_id, task_id, approve_count)
 VALUES ('', 'https://try.gitea.io/rooted/rootRepa/pulls/1', 'NOT_MERGED', 'RootPR', 2, 1, 0),
