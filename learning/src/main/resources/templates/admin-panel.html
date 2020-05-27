@@ -48,17 +48,17 @@
                     <td th:text="${user.username}"></td>
                     <td th:text="${user.roles}"></td>
                     <td class="td-button">
-                        <form>
+                        <form:form method="POST" action="deleteUser">
                             <input type="button" class="form-button btn btn-outline-secondary table-button"  value="Удалить поле">
                         </form>
                     </td>
                     <td class="td-button">
-                        <form>
+                        <form:form method="POST" action="addUser">
                             <input type="button" class="form-button btn btn-outline-secondary table-button" data-target="#userAdd" data-toggle="modal" value="Добавить поле">
                         </form>
                     </td>
                     <td class="td-button">
-                        <form>
+                        <form:form method="POST" action="insertUser">
                             <input type="button" class="form-button btn btn-outline-secondary table-button" data-target="#userChange" data-toggle="modal" value="Изменить поле">
                         </form>
                     </td>
