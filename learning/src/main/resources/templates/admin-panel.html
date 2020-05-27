@@ -77,24 +77,24 @@
                 </thead>
                 <tbody>
                 <tr th:each="task : ${tasks}">
-                    <td th:text="${task.name}" th:value=${task.name}></td>
+                    <td th:text="${task.name}"></td>
                     <td class="td-button">
                         <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#taskDescription">Просмотреть</button>
                     </td>
-                    <td th:text="${task.previous}" th:value="${task.previous}"></td>
+                    <td th:text="${task.previous}"></td>
                     <td class="td-button">
-                        <form:form method="POST" action="deleteTask">
+                        <form>
                             <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">
                         </form>
                     </td>
                     <td class="td-button">
-                        <form:form method="POST" action="insertTask">
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Добавить поле">
+                        <form>
+                            <input type="button" class="form-button btn btn-outline-secondary table-button" data-toggle="modal" data-target="#taskAdd" value="Добавить поле">
                         </form>
                     </td>
                     <td class="td-button">
-                        <form:form method="POST" action="changeTask">
-                            <input type="button" class="form-button btn btn-outline-secondary table-button" value="Изменить поле">
+                        <form>
+                            <input type="button" class="form-button btn btn-outline-secondary table-button" data-toggle="modal" data-target="#taskChange" value="Изменить поле">
                         </form>
                     </td>
                 </tr>
@@ -212,11 +212,39 @@
 </div>
 
 
-<!-- -->
+<!-- Модальное окно для добавления в таски -->
 
-<!-- -->
-<div class="modal fade" id="taskChange" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="taskAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskAddTitle">Задания</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="form-signing" action="" method="post">
+                        <div class="col-6 mb-3 fl-l"><label for="user_name_add"> </label> <input id="task_name_add" class="input-control" type="text" name="task-name" placeholder="Название задания" autofocus/> </div>
+                        <div class="col-6 mb-3 fl-l"><label for="task_after_add"> </label><input id="task_after_add" class="input-control" type="text" name="task-after" placeholder="После задания"/> </div>
+                        <div class="col-12 mb-3 fl-l"><label for="task_short_description_add"> </label><input id="task_short_description_add" class="input-control" type="text" name="task-short-description" placeholder="Краткое описание"/> </div>
+                        <input type="hidden" name="_csrf" value="{{_csrf.token}}">
+                    </form>
+                </div>
+                <div><input type="submit" class="form-button" value="Добавить задание"/></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для изменения таска, должны отображаться исходные данные -->
+
+<div class="modal fade" id="taskChange" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="taskChangeTitle">Задания</h5>
@@ -227,17 +255,19 @@
             <div class="modal-body">
                 <div class="row">
                     <form class="form-signing" action="" method="post">
-                        <div class="col-6 mb-3 fl-l"><label for="user_name_change"> </label> <input id="task_name_change" class="input-control" type="text" name="username" placeholder="Ваш логин" autofocus/> </div>
-                        <div class="col-6 mb-3 fl-l"><label for="task_change"> </label><input id="task_change" class="input-control" type="password" name="password" placeholder="Ваш логин"/> </div>
+                        <div class="col-6 mb-3 fl-l"><label for="user_name_change"> </label> <input id="task_name_change" class="input-control" type="text" name="task-name" placeholder="Название задания" autofocus/> </div>
+                        <div class="col-6 mb-3 fl-l"><label for="task_after_change"> </label><input id="task_after_change" class="input-control" type="text" name="task-after" placeholder="После задания"/> </div>
+                        <div class="col-12 mb-3 fl-l"><label for="task_short_description_change"> </label><input id="task_short_description_change" class="input-control" type="text" name="task-short-description" placeholder="Краткое описание"/> </div>
                         <input type="hidden" name="_csrf" value="{{_csrf.token}}">
                     </form>
                 </div>
-                <div><input type="submit" class="form-button" value="Sign In"/></div>
+                <div><input type="submit" class="btn btn-outline-secondary form-button" value="Изменить задание"/></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
     </div>
 </div>
+
 </html>
