@@ -90,4 +90,41 @@ public class UserController {
 
         return "admin-panel";
     }
+
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+    public String deleteUserRow(@ModelAttribute("ListTaskModel") User toDeleteUser) 
+    {
+        userRepo.delete(toDeleteUser);
+
+        return "admin-panel";
+    }
+
+    @RequestMapping(value = "/insertUser", method = RequestMethod.POST)
+    public String insertUserRow(@ModelAttribute("ListTaskModel") User insertUser) 
+    {
+        userRepo.save(insertUser);
+
+        return "admin-panel";
+    }
+
+    @RequestMapping(value = "/changeUser", method = RequestMethod.POST)
+    public String changeUserRow(@ModelAttribute("ListTaskModel") User toChangeUser) 
+    {
+        List<User> users = new ArrayList<User>();
+        userRepo.findAll().forEach(users::add);
+
+        for(User user : users)
+        {
+            if(user.getUsername() == toChangeUser.getUsername() ||
+                user.getPassword() == toChangeUser.getPassword())
+                {
+                    toChangeUser.setId(user.getId());
+                    break;
+                }
+        }
+
+        userRepo.save(toChangeUser);
+
+        return "admin-panel";
+    }
 }
