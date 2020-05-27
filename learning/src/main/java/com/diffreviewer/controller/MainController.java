@@ -62,7 +62,6 @@ public class MainController {
         // System.out.println("Bad url!");
         // return "/main-tree";
         // }
-        System.out.println("Hello world. This is button click click ;)");
         Task task = taskRepo.findByNameAndUser(taskChoise, user);
         if (task == null) {
             System.out.println("No task for this user given!");
