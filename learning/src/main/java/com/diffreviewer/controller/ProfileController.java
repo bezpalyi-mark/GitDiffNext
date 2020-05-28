@@ -91,14 +91,14 @@ public class ProfileController {
 
 //    @PostMapping("/show")
     @PostMapping("/show")
-    public String Translator(User user, String url) {
+    public String Translator(@AuthenticationPrincipal User user, String url) {
 
         GitApi api = new GitApi(url);
         HtmlReaderWriter htmlReaderWriter = new HtmlReaderWriter();
         String diff_url = api.GetPR(user).getDiffURL();
         InputStream in;
         try {
-            in = new URL(diff_url).openStream();
+            in = new URL(diff_url + ".diff").openStream();
             Files.copy(in, Paths.get("input.diff"), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e1) {
             // TODO Auto-generated catch block

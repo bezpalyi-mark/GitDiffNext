@@ -1,6 +1,7 @@
 package com.diffreviewer.controller;
 
 import com.diffreviewer.entities.MergeRequest;
+import com.diffreviewer.entities.Role;
 import com.diffreviewer.entities.Status;
 import com.diffreviewer.entities.User;
 import com.diffreviewer.repos.UserRepo;
@@ -58,7 +59,7 @@ public class GitApi {
 
         mergeRequest.setTitlePR(result.getTitle());  // Get title.
         mergeRequest.setDescriptionPR(result.getBody()); // Get description.
-        if(!user.getUsername().equals(result.getUser().getLogin())) {
+        if(!user.getUsername().equals(result.getUser().getLogin()) && !user.getRoles().contains(Role.ADMIN)) {
             System.out.println("Wrong user of MR");
             return null;
         }
@@ -91,7 +92,7 @@ public class GitApi {
             e.printStackTrace();
         }
 
-        mergeRequest.setDiffURL(result.getDiffUrl());
+        mergeRequest.setDiffURL(result.getDiffUrl().replace(".diff", ""));
 
         return mergeRequest;
     }

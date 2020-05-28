@@ -1,5 +1,11 @@
 package com.diffreviewer.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +16,10 @@ import com.diffreviewer.repos.MergeRequestRepo;
 import com.diffreviewer.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/user")
@@ -127,4 +130,37 @@ public class UserController {
 
         return "admin-panel";
     }
+//
+//    @PostMapping("/show")
+//    public String Translator(@AuthenticationPrincipal User user, String url) {
+//
+//        GitApi api = new GitApi(url);
+//        HtmlReaderWriter htmlReaderWriter = new HtmlReaderWriter();
+//        String diff_url = api.GetPR(user).getDiffURL();
+//        InputStream in;
+//        try {
+//            in = new URL(diff_url).openStream();
+//            Files.copy(in, Paths.get("input.diff"), StandardCopyOption.REPLACE_EXISTING);
+//        } catch (IOException e1) {
+//            // TODO Auto-generated catch block
+//            e1.printStackTrace();
+//        }
+//
+//        Process p;
+//        try
+//        {
+//            p = Runtime.getRuntime().exec("diff2html -F ./src/main/resources/templates/output-file.html -o stdout -i file -- input.diff");
+//        } catch(IOException e)
+//        {
+//            e.printStackTrace();
+//        }
+//        try {
+//            String body = htmlReaderWriter.getBody("./src/main/resources/templates/output-file.html");
+//            htmlReaderWriter.writeToDiffRev(body);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return "redirect:/dif-show";
+//    }
 }
