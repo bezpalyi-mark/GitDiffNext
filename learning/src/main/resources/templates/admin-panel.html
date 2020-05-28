@@ -81,7 +81,7 @@
                     <td class="td-button">
                         <button type="button" class="btn btn-outline-secondary table-button" data-toggle="modal" data-target="#taskDescription">Просмотреть</button>
                     </td>
-                    <td th:text="${task.previous.name}"></td>
+                    <td th:text="${task.previous}"></td>
                     <td class="td-button">
                         <form:form method="POST" action="deleteTask">
                             <input type="button" class="form-button btn btn-outline-secondary table-button" value="Удалить поле">
