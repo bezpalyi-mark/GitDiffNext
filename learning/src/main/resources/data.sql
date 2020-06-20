@@ -12,14 +12,14 @@ INSERT INTO user_role(user_id, role) VALUES (3, 'ADMIN'),
 INSERT INTO list_task(id, level_task, name, previous_id)
 VALUES (1, 1, 'Day1', NULL), (2, 2, 'Day2', 1), (3, 3, 'Day3', 2);
 
-INSERT INTO task (id, is_done, name, task_from_list_id, user_id) VALUES (1, 0, 'Second', 3, 1),
-                                                                        (2, 0, 'First', 2, 2),
-                                                                        (3, 0, 'Third', 1, 3),
-                                                                        (4, 1, 'First', 1, 2);
+INSERT INTO task (id, is_done, task_from_list_id, user_id) VALUES (1, 0, 3, 1),
+                                                                        (2, 0, 2, 2),
+                                                                        (3, 0, 1, 3),
+                                                                        (4, 1, 1, 2);
 
 INSERT INTO request(description_pr, diff_url, status, title_pr, creator_pr_id, task_id, approve_count)
 VALUES ('', 'https://try.gitea.io/rooted/rootRepa/pulls/1', 'NOT_MERGED', 'RootPR', 2, 1, 0),
-       ('Something', 'https://try.gitea.io/AlexKushch/test/pulls/2', 'NOT_MERGED', "Added 'file.txt'", 1, 2, 0),
+       ('Something', 'https://try.gitea.io/AlexKushch/test/pulls/2', 'NOT_MERGED', 'Added file.txt', 1, 2, 0),
        ('', 'https://try.gitea.io/admin9/AdminRepa/pulls/1', 'NOT_MERGED', 'second', 3, 3, 0);
 
 INSERT INTO comment(text, user_id, request_id)

@@ -1,6 +1,8 @@
 package com.diffreviewer.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "request")
@@ -38,6 +40,9 @@ public class MergeRequest {
 
     @Column(name = "approve_count")
     private int approveCount;
+
+    @OneToMany
+    private final List<RequestComment> comments = new ArrayList<>();
 
     public MergeRequest() {
     }
@@ -113,5 +118,9 @@ public class MergeRequest {
 
     public void setApproveCount(int approveCount) {
         this.approveCount = approveCount;
+    }
+
+    public void addRequestComment(RequestComment requestComment) {
+        comments.add(requestComment);
     }
 }

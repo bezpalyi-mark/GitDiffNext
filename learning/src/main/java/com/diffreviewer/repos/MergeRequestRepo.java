@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface MergeRequestRepo extends CrudRepository<MergeRequest, Long> {
     MergeRequest findByTaskAndStatusPR(Task task, Status status);
-    MergeRequest findByTaskNameAndStatusPR(String taskName, Status status);
-    MergeRequest findByTask_TaskAndStatusPR(ListTask taskFromList, Status status);
+    MergeRequest findByTaskReferenceInListAndStatusPR(ListTask taskFromList, Status status);
     List<MergeRequest> findByCreatorPR(User user);
 }

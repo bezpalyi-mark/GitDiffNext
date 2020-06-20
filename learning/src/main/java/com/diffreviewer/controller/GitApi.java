@@ -1,9 +1,9 @@
 package com.diffreviewer.controller;
 
 import com.diffreviewer.entities.MergeRequest;
+import com.diffreviewer.entities.RequestComment;
 import com.diffreviewer.entities.Status;
 import com.diffreviewer.entities.User;
-import com.diffreviewer.repos.UserRepo;
 import io.gitea.ApiClient;
 import io.gitea.ApiException;
 import io.gitea.Configuration;
@@ -12,7 +12,8 @@ import io.gitea.api.RepositoryApi;
 import io.gitea.auth.ApiKeyAuth;
 import io.gitea.model.Comment;
 import io.gitea.model.PullRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import java.util.List;
 
 @Controller
 public class GitApi {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(GitApi.class);
 
     /// Input url which enter user.
     private String url;  //https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3 "https://try.gitea.io/AlexKushch/test/pulls/2"
@@ -32,7 +35,7 @@ public class GitApi {
         this.url = url;
     }
 
-    public MergeRequest GetPR(User user) {
+    public MergeRequest getPR(User user) {
         /// Set configuration and access token.
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath("https://try.gitea.io/api/v1");
@@ -41,11 +44,11 @@ public class GitApi {
         accessToken.setApiKey("1c507ac020604c7a30315569fd6ccde908a64a25");  // 4399ec28ea4be7de3d5bfbc22c0e8c9da1058c62
 
         /// Divide url by '/' and get owner, repo and index from url.
-        String [] split = url.split("/");
+        String[] split = url.split("/");
 
         String owner = split[3]; // Owner in url always the third.
         String repo = split[4]; // Repo goes after owner
-        Long index = Long.parseLong(split[split.length-1]); // Index always the last in url.
+        Long index = Long.parseLong(split[split.length - 1]); // Index always the last in url.
 
         /// Get PR info.
         RepositoryApi repositoryApi = new RepositoryApi();
@@ -53,21 +56,21 @@ public class GitApi {
         try {
             result = repositoryApi.repoGetPullRequest(owner, repo, index);
         } catch (ApiException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
 
         mergeRequest.setTitlePR(result.getTitle());  // Get title.
         mergeRequest.setDescriptionPR(result.getBody()); // Get description.
-        // if(!user.getUsername().equals(result.getUser().getLogin())) {
-        //     System.out.println("Wrong user of MR");
-        //     return null;
-        // }
+        if (!user.getUsername().equals(result.getUser().getLogin())) {
+            LOGGER.error("Wrong user of MR");
+            return null;
+        }
         mergeRequest.setCreatorPR(user);  // Get creator.
 
         /// Class 'PullRequest' has two field. State(open, close), Merged(merged, not merged).
         String state = result.getState();
-        if(state.equals("open")){       // First of all check by State. If is 'open' then
-            if(result.getMergedBy() != null){   // Check by merged.
+        if (state.equals("open")) {       // First of all check by State. If is 'open' then
+            if (result.getMergedBy() != null) {   // Check by merged.
                 mergeRequest.setStatusPR(Status.MERGED);
             } else {
                 mergeRequest.setStatusPR(Status.NOT_MERGED);
@@ -84,11 +87,11 @@ public class GitApi {
             comments = issueApi.issueGetRepoComments(owner, repo, "");
             for (Comment comment : comments) {
                 if (comment.getPullRequestUrl().equals(url)) {
-//                    mergeRequest.addRequestComment(new RequestComment(user, comment.getBody()));
+                    mergeRequest.addRequestComment(new RequestComment(user, comment.getBody()));
                 }
             }
         } catch (ApiException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
 
         mergeRequest.setDiffURL(result.getDiffUrl());

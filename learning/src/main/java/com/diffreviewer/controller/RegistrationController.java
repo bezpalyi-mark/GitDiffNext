@@ -35,7 +35,7 @@ public class RegistrationController {
         HashPassword hashPassword = new HashPassword();
         String hash = hashPassword.encode(user.getPassword());
         user.setPassword(hash);
-        if(!hash.isEmpty()){
+        if (!hash.isEmpty()) {
             userRepo.save(user);
         }
         return "redirect:/login";

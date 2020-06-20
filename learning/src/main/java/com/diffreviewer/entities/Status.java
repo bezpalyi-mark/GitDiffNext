@@ -6,7 +6,7 @@ public enum Status implements GrantedAuthority {
     MERGED,
     NOT_MERGED,
     CLOSED,
-    Completed,
+    COMPLETED,
     WIP;
 
     @Override

@@ -11,8 +11,6 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -21,15 +19,14 @@ public class Task {
 
     @OneToOne
     @JoinColumn(name = "task_from_list_id")
-    private ListTask task;
+    private ListTask referenceInList;
 
     public Task() {
     }
 
-    public Task(Long id, String name, ListTask task) {
+    public Task(Long id, ListTask referenceInList) {
         this.id = id;
-        this.name = name;
-        this.task = task;
+        this.referenceInList = referenceInList;
     }
 
     public Long getId() {
@@ -38,14 +35,6 @@ public class Task {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public User getUser() {
@@ -64,11 +53,11 @@ public class Task {
         isDone = done;
     }
 
-    public ListTask getTask() {
-        return task;
+    public ListTask getReferenceInList() {
+        return referenceInList;
     }
 
-    public void setTask(ListTask task) {
-        this.task = task;
+    public void setReferenceInList(ListTask task) {
+        this.referenceInList = task;
     }
 }

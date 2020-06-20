@@ -17,7 +17,7 @@ public class ListTask {
     @OneToOne
     private ListTask previous;
 
-    public ListTask(){
+    public ListTask() {
 
     }
 
@@ -66,7 +66,7 @@ public class ListTask {
      * @param name the name to set
      */
     public void setName(String name) {
-        name = name;
+        this.name = name;
     }
 
     /**
@@ -77,11 +77,11 @@ public class ListTask {
     }
 
     /**
-     * @param level_task the level_task to set
+     * @param level the level_task to set
      */
-    public void setTaskLevel(int level_task) {
-        this.taskLevel = level_task;
+    public void setTaskLevel(int level) {
+        this.taskLevel = level;
     }
 
-    
+
 }

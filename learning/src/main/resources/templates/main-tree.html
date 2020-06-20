@@ -20,18 +20,17 @@
         <div class="col-12 h3">Добавить MR на проверку</div>
         <div class="col-4">
                 <div class="form-group">
-                    <label for="taskChoise">Задание:</label>
+                    <label for="taskChoose">Задание:</label>
 
-                    <select class="form-control" name="selectTask" id="taskChoise">
+                    <select class="form-control" name="selectTask" id="taskChoose">
                         <option th:each="existTask : ${existTasks}" th:value="${existTask.name}" th:text="${existTask.name}"></option>
                     </select>
                 </div>
         </div>
         <div class="col-6">
                 <div class="form-group">
-                    <label for="MR">Ваш MR</label>
-                    <input type="text" name="MR" class="form-control" id="MR" placeholder="https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3"
-                           th:value="*{MR}">
+                    <label for="mr">Ваш MR</label>
+                    <input type="text" name="mr" class="form-control" id="mr" placeholder="https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3">
                 </div>
         </div>
         <div class="col-2" style="margin-top: 32px">

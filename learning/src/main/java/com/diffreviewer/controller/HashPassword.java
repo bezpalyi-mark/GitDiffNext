@@ -1,11 +1,16 @@
 package com.diffreviewer.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class HashPassword implements PasswordEncoder {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(HashPassword.class);
+
     public HashPassword() {
     }
 
@@ -15,7 +20,7 @@ public class HashPassword implements PasswordEncoder {
         try {
             sha256 = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
             return "";
         }
 
@@ -34,7 +39,7 @@ public class HashPassword implements PasswordEncoder {
         try {
             sha256 = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
             return false;
         }
 

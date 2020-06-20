@@ -5,6 +5,8 @@ import com.diffreviewer.repos.ListTaskRepo;
 import com.diffreviewer.repos.MergeRequestRepo;
 import com.diffreviewer.repos.TaskRepo;
 import com.diffreviewer.repos.UserRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,17 +29,23 @@ import java.util.Optional;
 @Controller
 public class ProfileController {
 
-    @Autowired
-    private MergeRequestRepo mergeRequestRepo;
+    public static final Logger LOGGER  = LoggerFactory.getLogger(ProfileController.class);
+
+    private final MergeRequestRepo mergeRequestRepo;
+
+    private final UserRepo userRepo;
+
+    private final TaskRepo taskRepo;
+
+    private final ListTaskRepo listTaskRepo;
 
     @Autowired
-    private UserRepo userRepo;
-
-    @Autowired
-    private TaskRepo taskRepo;
-
-    @Autowired
-    private ListTaskRepo listTaskRepo;
+    public ProfileController(MergeRequestRepo mergeRequestRepo, UserRepo userRepo, TaskRepo taskRepo, ListTaskRepo listTaskRepo) {
+        this.mergeRequestRepo = mergeRequestRepo;
+        this.userRepo = userRepo;
+        this.taskRepo = taskRepo;
+        this.listTaskRepo = listTaskRepo;
+    }
 
     @GetMapping("/profile")
     public String profile(@AuthenticationPrincipal User user, Model model) {
@@ -60,20 +68,20 @@ public class ProfileController {
         model.addAttribute("role", currentUser.getRoles());
         List<Task> doneTasks = taskRepo.findByUserAndIsDone(currentUser, true);
 
-        if (doneTasks.size() > 0) {
+        if (!doneTasks.isEmpty()) {
             List<MergeRequest> mergeRequestList = new ArrayList<>();
             for (Task task : doneTasks) {
-                Optional<ListTask> byId = listTaskRepo.findById((long) task.getTask().getId());
+                Optional<ListTask> byId = listTaskRepo.findById(task.getReferenceInList().getId());
                 byId.ifPresent(listTask -> mergeRequestList
-                        .add(mergeRequestRepo.findByTask_TaskAndStatusPR(listTask, Status.NOT_MERGED)));
+                        .add(mergeRequestRepo.findByTaskReferenceInListAndStatusPR(listTask, Status.NOT_MERGED)));
             }
-            if (mergeRequestList.size() > 0) {
+            if (!mergeRequestList.isEmpty()) {
                 model.addAttribute("requests", mergeRequestList.iterator());
             }
         }
 
         List<MergeRequest> ownersRequests = mergeRequestRepo.findByCreatorPR(user);
-        if(ownersRequests.size() > 0) {
+        if (!ownersRequests.isEmpty()) {
             model.addAttribute("my_requests", ownersRequests);
         }
         return "profile";
@@ -89,35 +97,34 @@ public class ProfileController {
         return "main-tree";
     }
 
-//    @PostMapping("/show")
     @PostMapping("/show")
-    public String Translator(User user, String url) {
+    public String translator(User user, String url) {
 
         GitApi api = new GitApi(url);
         HtmlReaderWriter htmlReaderWriter = new HtmlReaderWriter();
-        String diff_url = api.GetPR(user).getDiffURL();
+        String diffURL = api.getPR(user).getDiffURL();
         InputStream in;
         try {
-            in = new URL(diff_url).openStream();
+            in = new URL(diffURL).openStream();
             Files.copy(in, Paths.get("input.diff"), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            LOGGER.error(e1.getMessage());
         }
 
-        Process p;
-        try
-        {
+        Process p = null;
+        try {
             p = Runtime.getRuntime().exec("diff2html -F ./src/main/resources/templates/output-file.html -o stdout -i file -- input.diff");
-        } catch(IOException e)
-        {
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+        }
+        if(p != null) {
+            LOGGER.info("Process go");
         }
         try {
             String body = htmlReaderWriter.getBody("./src/main/resources/templates/output-file.html");
             htmlReaderWriter.writeToDiffRev(body);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
 
         return "redirect:/dif-show";
