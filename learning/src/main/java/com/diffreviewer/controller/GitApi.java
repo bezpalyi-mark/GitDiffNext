@@ -1,9 +1,9 @@
 package com.diffreviewer.controller;
 
-import com.diffreviewer.entities.MergeRequest;
 import com.diffreviewer.entities.RequestComment;
 import com.diffreviewer.entities.Status;
 import com.diffreviewer.entities.User;
+import com.diffreviewer.entities.request.SaveMergeRequest;
 import io.gitea.ApiClient;
 import io.gitea.ApiException;
 import io.gitea.Configuration;
@@ -26,7 +26,7 @@ public class GitApi {
 
     /// Input url which enter user.
     private String url;  //https://gitea.novalab.live/novalab-pool/diff-reviewer/pulls/3 "https://try.gitea.io/AlexKushch/test/pulls/2"
-    private final MergeRequest mergeRequest = new MergeRequest();
+    private final SaveMergeRequest request = new SaveMergeRequest();
 
     public GitApi() {
     }
@@ -35,7 +35,7 @@ public class GitApi {
         this.url = url;
     }
 
-    public MergeRequest getPR(User user) {
+    public SaveMergeRequest getPR(User user) {
         /// Set configuration and access token.
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath("https://try.gitea.io/api/v1");
@@ -59,24 +59,24 @@ public class GitApi {
             LOGGER.error(e.getMessage());
         }
 
-        mergeRequest.setTitlePR(result.getTitle());  // Get title.
-        mergeRequest.setDescriptionPR(result.getBody()); // Get description.
+        request.setTitlePRName(result.getTitle());  // Get title.
+        request.setDescriptionPR(result.getBody()); // Get description.
         if (!user.getUsername().equals(result.getUser().getLogin())) {
             LOGGER.error("Wrong user of MR");
             return null;
         }
-        mergeRequest.setCreatorPR(user);  // Get creator.
+        request.setCreatorPRName(user.getUsername());  // Get creator.
 
         /// Class 'PullRequest' has two field. State(open, close), Merged(merged, not merged).
         String state = result.getState();
         if (state.equals("open")) {       // First of all check by State. If is 'open' then
             if (result.getMergedBy() != null) {   // Check by merged.
-                mergeRequest.setStatusPR(Status.MERGED);
+                request.setStatusPRName(Status.MERGED.name());
             } else {
-                mergeRequest.setStatusPR(Status.NOT_MERGED);
+                request.setStatusPRName(Status.NOT_MERGED.name());
             }
         } else {
-            mergeRequest.setStatusPR(Status.CLOSED);
+            request.setStatusPRName(Status.CLOSED.name());
         }
 
         /// All comments are located in list of all comments. Here issues comments and PR comments.
@@ -87,15 +87,15 @@ public class GitApi {
             comments = issueApi.issueGetRepoComments(owner, repo, "");
             for (Comment comment : comments) {
                 if (comment.getPullRequestUrl().equals(url)) {
-                    mergeRequest.addRequestComment(new RequestComment(user, comment.getBody()));
+                    request.addRequestComment(new RequestComment(user, comment.getBody()));
                 }
             }
         } catch (ApiException e) {
             LOGGER.error(e.getMessage());
         }
 
-        mergeRequest.setDiffURL(result.getDiffUrl());
+        request.setDiffURLName(result.getDiffUrl());
 
-        return mergeRequest;
+        return request;
     }
 }

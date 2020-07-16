@@ -2,9 +2,10 @@ package com.diffreviewer.controller;
 
 import com.diffreviewer.entities.*;
 import com.diffreviewer.repos.ListTaskRepo;
-import com.diffreviewer.repos.MergeRequestRepo;
-import com.diffreviewer.repos.TaskRepo;
 import com.diffreviewer.repos.UserRepo;
+import com.diffreviewer.service.ListTaskCRUD;
+import com.diffreviewer.service.MergeRequestCRUD;
+import com.diffreviewer.service.TaskCRUD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,22 +30,22 @@ import java.util.Optional;
 @Controller
 public class ProfileController {
 
-    public static final Logger LOGGER  = LoggerFactory.getLogger(ProfileController.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
 
-    private final MergeRequestRepo mergeRequestRepo;
+    private final MergeRequestCRUD mergeRequestCRUD;
 
     private final UserRepo userRepo;
 
-    private final TaskRepo taskRepo;
+    private final TaskCRUD taskCRUD;
 
-    private final ListTaskRepo listTaskRepo;
+    private final ListTaskCRUD listTaskCRUD;
 
     @Autowired
-    public ProfileController(MergeRequestRepo mergeRequestRepo, UserRepo userRepo, TaskRepo taskRepo, ListTaskRepo listTaskRepo) {
-        this.mergeRequestRepo = mergeRequestRepo;
+    public ProfileController(MergeRequestCRUD mergeRequestCRUD, UserRepo userRepo, TaskCRUD taskCRUD, ListTaskCRUD listTaskCRUD) {
+        this.mergeRequestCRUD = mergeRequestCRUD;
         this.userRepo = userRepo;
-        this.taskRepo = taskRepo;
-        this.listTaskRepo = listTaskRepo;
+        this.taskCRUD = taskCRUD;
+        this.listTaskCRUD = listTaskCRUD;
     }
 
     @GetMapping("/profile")
@@ -60,41 +61,29 @@ public class ProfileController {
             username = principal.toString();
         }
         User currentUser = userRepo.findByUsername(username);
-        if (currentUser == null) {
-            return "redirect:/login";
-        }
+
         model.addAttribute("login", currentUser.getUsername());
         model.addAttribute("curse", "novalab");
         model.addAttribute("role", currentUser.getRoles());
-        List<Task> doneTasks = taskRepo.findByUserAndIsDone(currentUser, true);
+        List<Task> doneTasks = taskCRUD.getDoneTasksByUser(currentUser);
 
         if (!doneTasks.isEmpty()) {
             List<MergeRequest> mergeRequestList = new ArrayList<>();
             for (Task task : doneTasks) {
-                Optional<ListTask> byId = listTaskRepo.findById(task.getReferenceInList().getId());
+                Optional<ListTask> byId = listTaskCRUD.getById(task.getReferenceInList().getId());
                 byId.ifPresent(listTask -> mergeRequestList
-                        .add(mergeRequestRepo.findByTaskReferenceInListAndStatusPR(listTask, Status.NOT_MERGED)));
+                        .add(mergeRequestCRUD.findByTaskReferenceInListAndStatusPR(listTask, Status.NOT_MERGED)));
             }
             if (!mergeRequestList.isEmpty()) {
                 model.addAttribute("requests", mergeRequestList.iterator());
             }
         }
 
-        List<MergeRequest> ownersRequests = mergeRequestRepo.findByCreatorPR(user);
+        List<MergeRequest> ownersRequests = mergeRequestCRUD.getByCreator(user);
         if (!ownersRequests.isEmpty()) {
             model.addAttribute("my_requests", ownersRequests);
         }
         return "profile";
-    }
-
-    @GetMapping("/main-tree")
-    public String main(@AuthenticationPrincipal User user, Model model) {
-        if (user == null) {
-            return "redirect:/login";
-        }
-        Iterable<ListTask> listTasks = listTaskRepo.findAll();
-        model.addAttribute("existTasks", listTasks);
-        return "main-tree";
     }
 
     @PostMapping("/show")
@@ -102,7 +91,7 @@ public class ProfileController {
 
         GitApi api = new GitApi(url);
         HtmlReaderWriter htmlReaderWriter = new HtmlReaderWriter();
-        String diffURL = api.getPR(user).getDiffURL();
+        String diffURL = api.getPR(user).getDiffURLName();
         InputStream in;
         try {
             in = new URL(diffURL).openStream();
@@ -117,7 +106,7 @@ public class ProfileController {
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         }
-        if(p != null) {
+        if (p != null) {
             LOGGER.info("Process go");
         }
         try {
