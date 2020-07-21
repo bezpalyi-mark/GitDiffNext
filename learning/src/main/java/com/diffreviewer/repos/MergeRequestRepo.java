@@ -9,4 +9,5 @@ public interface MergeRequestRepo extends CrudRepository<MergeRequest, Long> {
     MergeRequest findByTaskAndStatusPR(Task task, Status status);
     MergeRequest findByTaskReferenceInListAndStatusPR(ListTask taskFromList, Status status);
     List<MergeRequest> findByCreatorPR(User user);
+    MergeRequest findByDiffURL(String url);
 }

@@ -24,4 +24,6 @@ public interface MergeRequestCRUD {
     MergeRequest findByTaskReferenceInListAndStatusPR(ListTask listTask, Status status);
 
     List<MergeRequest> getByCreator(User user);
+
+    MergeRequest getByUrl(String url);
 }

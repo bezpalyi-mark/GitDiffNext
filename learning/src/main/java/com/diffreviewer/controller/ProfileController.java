@@ -1,7 +1,7 @@
 package com.diffreviewer.controller;
 
 import com.diffreviewer.entities.*;
-import com.diffreviewer.repos.ListTaskRepo;
+import com.diffreviewer.exception.UserNotFoundException;
 import com.diffreviewer.repos.UserRepo;
 import com.diffreviewer.service.ListTaskCRUD;
 import com.diffreviewer.service.MergeRequestCRUD;
@@ -9,16 +9,17 @@ import com.diffreviewer.service.TaskCRUD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.awt.*;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -40,6 +41,10 @@ public class ProfileController {
 
     private final ListTaskCRUD listTaskCRUD;
 
+    private Integer waitTimeInSeconds = 20;
+
+    private final HtmlReaderWriter htmlReaderWriter = new HtmlReaderWriter();
+
     @Autowired
     public ProfileController(MergeRequestCRUD mergeRequestCRUD, UserRepo userRepo, TaskCRUD taskCRUD, ListTaskCRUD listTaskCRUD) {
         this.mergeRequestCRUD = mergeRequestCRUD;
@@ -49,18 +54,11 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public String profile(@AuthenticationPrincipal User user, Model model) {
-        if (user.getRoles().contains(Role.ADMIN)) {
+    public String profile(Model model) {
+        User currentUser = getUser();
+        if (currentUser.getRoles().contains(Role.ADMIN)) {
             return "redirect:/user";
         }
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username;
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-        User currentUser = userRepo.findByUsername(username);
 
         model.addAttribute("login", currentUser.getUsername());
         model.addAttribute("curse", "novalab");
@@ -79,7 +77,7 @@ public class ProfileController {
             }
         }
 
-        List<MergeRequest> ownersRequests = mergeRequestCRUD.getByCreator(user);
+        List<MergeRequest> ownersRequests = mergeRequestCRUD.getByCreator(currentUser);
         if (!ownersRequests.isEmpty()) {
             model.addAttribute("my_requests", ownersRequests);
         }
@@ -87,41 +85,87 @@ public class ProfileController {
     }
 
     @PostMapping("/show")
-    public String translator(User user, String url) {
-
-        GitApi api = new GitApi(url);
-        HtmlReaderWriter htmlReaderWriter = new HtmlReaderWriter();
-        String diffURL = api.getPR(user).getDiffURLName();
+    public String translator(String url) {
         InputStream in;
         try {
-            in = new URL(diffURL).openStream();
+            in = new URL(url + ".diff").openStream();
             Files.copy(in, Paths.get("input.diff"), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e1) {
             LOGGER.error(e1.getMessage());
         }
 
-        Process p = null;
+        Process p;
         try {
             p = Runtime.getRuntime().exec("diff2html -F ./src/main/resources/templates/output-file.html -o stdout -i file -- input.diff");
-        } catch (IOException e) {
+            if (p != null) {
+                LOGGER.info("Process go");
+                try(BufferedReader output = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+                    String outputText = output.readLine();
+                    int times = 0;
+                    while(outputText.equals("") && times < waitTimeInSeconds) {
+                        Thread.sleep(1000);
+                        times++;
+                    }
+                    LOGGER.info(outputText);
+                    if(p.isAlive()) {
+                        p.destroy();
+                        if( outputText.equals("")) {
+                            LOGGER.error("Process was destroyed");
+                        } else {
+                            LOGGER.warn("Process done but was terminated");
+                        }
+                    } else {
+                        return "redirect:/review";
+                    }
+                }
+            } else {
+                LOGGER.error("Cannot run process");
+            }
+        } catch (IOException | InterruptedException e) {
             LOGGER.error(e.getMessage());
         }
-        if (p != null) {
-            LOGGER.info("Process go");
-        }
-        try {
-            String body = htmlReaderWriter.getBody("./src/main/resources/templates/output-file.html");
-            htmlReaderWriter.writeToDiffRev(body);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-        }
-
-        return "redirect:/dif-show";
+        return "redirect:/review";
     }
 
     @GetMapping("/dif-show")
     public String outputFile() {
         return "dif-show";
+    }
+
+    @GetMapping(value = "/review", produces = MediaType.TEXT_HTML_VALUE)
+    @ResponseBody
+    public String review() throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        String body = htmlReaderWriter.getBody("./src/main/resources/templates/output-file.html");
+        stringBuilder.append(HtmlReaderWriter.HEAD);
+        stringBuilder.append(HtmlReaderWriter.HEADER);
+        stringBuilder.append(body);
+        return stringBuilder.toString();
+    }
+
+    private User getUser() {
+        User user;
+        String username;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        user = userRepo.findByUsername(username);
+        if (user == null) {
+            LOGGER.error("Problems with user");
+            throw new UserNotFoundException(username);
+        }
+        return user;
+    }
+
+    public Integer getWaitTimeInSeconds() {
+        return waitTimeInSeconds;
+    }
+
+    public void setWaitTimeInSeconds(Integer waitTimeInSeconds) {
+       this.waitTimeInSeconds = waitTimeInSeconds;
     }
 
 }

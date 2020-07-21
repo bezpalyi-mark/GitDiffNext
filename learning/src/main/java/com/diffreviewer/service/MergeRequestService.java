@@ -73,6 +73,11 @@ public class MergeRequestService implements MergeRequestCRUD {
         return mergeRequestRepo.findByCreatorPR(user);
     }
 
+    @Override
+    public MergeRequest getByUrl(String url) {
+        return mergeRequestRepo.findByDiffURL(url);
+    }
+
     private MergeRequest createMergeRequest(MergeRequest mergeRequest, SaveMergeRequest request) {
         User user = userCRUD.getUserByUsername(request.getCreatorPRName());
         if (user == null) {
